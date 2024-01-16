@@ -9,3 +9,5 @@ make
 
 To Run:
 sudo mpirun [-hosts host_list] ./host/parallel ./enclave/parallel_enc.signed array_size num_threads
+
+Remove -DOE_SIMULATION_CERT in the makefile if there are errors during execution. I only change the element values in common/elem_t.h
