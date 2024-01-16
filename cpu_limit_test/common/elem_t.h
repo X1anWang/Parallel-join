@@ -8,7 +8,7 @@
 
 #define ELEM_SIZE 128
 #define ELEM_STRUCT_SIZE 19
-#define DATA_LENGTH 1024
+#define DATA_LENGTH 1048572
 
 typedef int ojoin_int_type;
 

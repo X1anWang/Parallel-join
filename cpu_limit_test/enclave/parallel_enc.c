@@ -16,6 +16,8 @@
 #include "enclave/parallel_t.h"
 #endif
 
+#define CPU_SIZE 38000
+
 int world_rank;
 int world_size;
 
@@ -270,7 +272,8 @@ int cmp(int *a, int *b) {
 }
 
 void ecall_cpu_computations_limit(long long *size_ptr) {
-	long long size = *size_ptr;
+	long long size = CPU_SIZE;
+
 
 	cpu_t *arr = calloc(size, sizeof(*arr));
 	printf("Block size %d\n", sizeof(*arr));
