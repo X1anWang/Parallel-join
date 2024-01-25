@@ -34,8 +34,10 @@
 #include <string.h>
 #include <assert.h>
 #include <time.h>
-# include <unistd.h>
-# include <pwd.h>
+#include <unistd.h>
+#include <pwd.h>
+#include <chrono>
+#include <iostream>
 # define MAX_PATH FILENAME_MAX
 # define MAX_BUF_SIZE 2147483648
 
@@ -48,6 +50,9 @@ sgx_enclave_id_t global_eid = 0;
 
 struct timespec last_time;
 struct timespec last_time3;
+std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
+std::chrono::time_point<std::chrono::high_resolution_clock> start_comp, end_comp;
+double total_comp_time = 0;
 double time_accumulate;
 int time_count;
 
@@ -224,6 +229,32 @@ int initialize_enclave(void)
     return 0;
 }
 
+void ocall_init_comp_clock(void) {
+    start_comp = std::chrono::high_resolution_clock::now();
+}
+void ocall_get_comp_time(void) {
+    double t = (double) std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start_comp).count();
+    total_comp_time += t;
+    printf("Added time to total_comp_time: %ld\n",t);
+    ocall_init_comp_clock();
+}
+
+void ocall_init_time(void) {
+    start = std::chrono::high_resolution_clock::now();
+}
+
+void ocall_get_time(void) {
+ 
+    double t = (double) std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count();
+    end = std::chrono::system_clock::now();
+    
+    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+ 
+    std::cout << "finished computation at " << std::ctime(&end_time)
+              << "elapsed time: " << t << "milliscs\n";
+}
+
+
 void init_time(void) {
     int ret;
     ret = timespec_get(&last_time, TIME_UTC);
@@ -368,11 +399,13 @@ int SGX_CDECL main(int argc, char *argv[])
         buf[read] = '\0';
         fclose(inp);
         
-	printf("buf: %s\n",buf);
         clock_t program_start = clock();
-        process_input(global_eid, buf, MAX_BUF_SIZE);
-        printf("Total runtime: %.2fs\n", (clock() - program_start) / (float)CLOCKS_PER_SEC);
-
+        int maxsize =24;
+        int res;
+        branching_factor_test(global_eid, &res, maxsize);
+        // process_input(global_eid, buf, MAX_BUF_SIZE);
+        // printf("Total runtime: %.2fs\n", (clock() - program_start) / (float)CLOCKS_PER_SEC);
+        printf("Total comp time: %ld\n", total_comp_time);
         fwrite(buf, 1, 100, oup);
         free(buf);
     }

@@ -41,9 +41,52 @@
 #include "Enclave_t.h"  /* print_string */
 
 #include "join.h"
+// #include "sort.h"
 #include "layout.h"
 #include "table_util.h"
 
+int branching_factor_test( int maxsize) {
+    printf("Inside the enclave, %d\n", maxsize);
+    long long tsize = 1 << 21;
+    printf("tsize: %lld, table entry size: %d\n", tsize, sizeof(Table::TableEntry));
+    long long cnt = 0;
+    Table t(tsize);
+    for ( long long i = tsize -1; i > 0; i--) {
+        // printf("%lld\n", i);
+        int j,d;
+        j = i;
+        d = i% 10;
+
+        Table::TableEntry entry = t.data.read(i);
+        entry.entry_type = REG_ENTRY;
+        entry.table_id = 0;
+        entry.join_attr = j;
+        entry.data_attr = d;
+        t.data.write(i, entry);
+        // printf("Table[%lld]: %d\n", cnt, entry.join_attr);
+    }
+    // for ( long long i = tsize -1; i > 0; i--) {
+    //     // printf("%lld\n", i);
+    //     int j,d;
+    //     j = i;
+    //     d = i% 10;
+
+    //     Table::TableEntry entry = t.data.read(cnt);
+    //     entry.entry_type = REG_ENTRY;
+    //     entry.table_id = 0;
+    //     entry.join_attr = j;
+    //     entry.data_attr = d;
+    //     t.data.write(cnt, entry);
+    //     // printf("Table[%lld]: %d\n", cnt, entry.join_attr);
+    //     cnt++;
+    // }
+    printf("Done initializing table\n");
+    ocall_init_time();
+    bitonic_sort<Table::TableEntry, Table::attr_comp>(&t.data);
+    ocall_get_time();
+    
+    return 0;
+}
 
 /* 
  * printf: 

@@ -16,28 +16,23 @@
 extern "C" {
 #endif
 
-#ifndef _struct_foo_t
-#define _struct_foo_t
 typedef struct struct_foo_t {
 	uint32_t struct_foo_0;
 	uint64_t struct_foo_1;
 } struct_foo_t;
-#endif
 
 typedef enum enum_foo_t {
 	ENUM_FOO_0 = 0,
 	ENUM_FOO_1 = 1,
 } enum_foo_t;
 
-#ifndef _union_foo_t
-#define _union_foo_t
 typedef union union_foo_t {
 	uint32_t union_foo_0;
 	uint32_t union_foo_1;
 	uint64_t union_foo_3;
 } union_foo_t;
-#endif
 
+int branching_factor_test(int maxsize);
 void process_input(char* buf, size_t len);
 void ecall_type_char(char val);
 void ecall_type_int(int val);
@@ -76,6 +71,10 @@ void ecall_consumer(void);
 sgx_status_t SGX_CDECL ocall_print_string(const char* str);
 sgx_status_t SGX_CDECL init_time(void);
 sgx_status_t SGX_CDECL get_time(int if_print);
+sgx_status_t SGX_CDECL ocall_init_time(void);
+sgx_status_t SGX_CDECL ocall_get_time(void);
+sgx_status_t SGX_CDECL ocall_init_comp_clock(void);
+sgx_status_t SGX_CDECL ocall_get_comp_time(void);
 sgx_status_t SGX_CDECL ocall_pointer_user_check(int* val);
 sgx_status_t SGX_CDECL ocall_pointer_in(int* val);
 sgx_status_t SGX_CDECL ocall_pointer_out(int* val);
