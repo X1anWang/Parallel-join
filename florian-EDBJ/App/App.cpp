@@ -200,7 +200,7 @@ int initialize_enclave(void)
     }
     /* Step 2: call sgx_create_enclave to initialize an enclave instance */
     /* Debug Support: set 2nd parameter to 1 */
-    ret = sgx_create_enclave(ENCLAVE_FILENAME, SGX_DEBUG_FLAG, &token, &updated, &global_eid, NULL);
+    ret = sgx_create_enclave(ENCLAVE_FILENAME, 0, &token, &updated, &global_eid, NULL);
     if (ret != SGX_SUCCESS) {
         print_error_message(ret);
         if (fp != NULL) fclose(fp);
@@ -331,11 +331,11 @@ int SGX_CDECL main(int argc, char *argv[])
     }
  
     /* Utilize edger8r attributes */
-    edger8r_array_attributes();
+/*    edger8r_array_attributes();
     edger8r_pointer_attributes();
     edger8r_type_attributes();
     edger8r_function_attributes();
-    
+  */  
     /* Utilize trusted libraries */
     ecall_libc_functions();
     ecall_libcxx_functions();
@@ -368,6 +368,7 @@ int SGX_CDECL main(int argc, char *argv[])
         buf[read] = '\0';
         fclose(inp);
         
+	printf("buf: %s\n",buf);
         clock_t program_start = clock();
         process_input(global_eid, buf, MAX_BUF_SIZE);
         printf("Total runtime: %.2fs\n", (clock() - program_start) / (float)CLOCKS_PER_SEC);

@@ -6,7 +6,6 @@
 #include "sort.h"
 #include "trace_mem.h"
 
-
 // TODO: do this in two passes, as in pseudocode from paper
 int write_block_sizes(int n, Table& table) {
     int output_size = 0;
@@ -68,7 +67,7 @@ static void obliv_expand(TraceMem<Table::TableEntry> *traceMem) {
     }
 
     obliv_distribute<Table::TableEntry, Table::entry_ind>(traceMem, csum);
-    get_time(1);
+    //get_time(1);
 
     // TODO: simplify this logic
     Table::TableEntry last;
