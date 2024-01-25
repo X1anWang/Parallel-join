@@ -1,2 +1,3 @@
 # Parallel-join
  
+Readme updated.
