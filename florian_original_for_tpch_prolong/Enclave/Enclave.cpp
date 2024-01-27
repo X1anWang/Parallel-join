@@ -64,9 +64,9 @@ void process_input(char *buf, size_t len)
     printf("Enclave begin\n");
     
     // read input as one concatenated table
-    int n1, n2;
+    long long n1, n2;
     Table t = parseTables(buf, n1, n2);
-    int n = n1 + n2;
+    long long n = n1 + n2;
     
     init_time();
     Table t0(n1), t1(n2);

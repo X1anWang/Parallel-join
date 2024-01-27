@@ -8,12 +8,12 @@
 
 
 // TODO: do this in two passes, as in pseudocode from paper
-int write_block_sizes(int n, Table& table) {
-    int output_size = 0;
+long long write_block_sizes(long long n, Table& table) {
+    long long output_size = 0;
 
     // scan in forward direction to fill in height fields for table 1 entries
-    int height = 0, width = 0, last_join_attr = INT_MIN;
-    for (int i = 0; i < n; i++) {
+    long long height = 0, width = 0, last_join_attr = INT_MIN;
+    for (long long i = 0; i < n; i++) {
         Table::TableEntry entry = table.data.read(i);
         bool same_attr = entry.join_attr == last_join_attr;
 
@@ -25,7 +25,7 @@ int write_block_sizes(int n, Table& table) {
     }
     // scan in backward direction to fill in width + height fields for table 0 entries
     height = 0; width = 0, last_join_attr = INT_MIN;
-    for (int i = n - 1; i >= 0; i--) {
+    for (long long i = n - 1; i >= 0; i--) {
         Table::TableEntry entry = table.data.read(i);
         bool same_attr = entry.join_attr == last_join_attr;
 
@@ -39,7 +39,7 @@ int write_block_sizes(int n, Table& table) {
     }
     // scan in forward direction to fill in width fields for table 1 entries
     height = 0; width = 0, last_join_attr = INT_MIN;
-    for (int i = 0; i < n; i++) {
+    for (long long i = 0; i < n; i++) {
         Table::TableEntry entry = table.data.read(i);
         bool same_attr = entry.join_attr == last_join_attr;
 
@@ -54,13 +54,13 @@ int write_block_sizes(int n, Table& table) {
     return output_size;
 }
 
-template <int (*weight_func)(Table::TableEntry e)>
+template <long long (*weight_func)(Table::TableEntry e)>
 static void obliv_expand(TraceMem<Table::TableEntry> *traceMem) {
-    int csum = 0;
+    long long csum = 0;
 
-    for (int i = 0; i < traceMem->size; i++) {
+    for (long long i = 0; i < traceMem->size; i++) {
         Table::TableEntry e = traceMem->read(i);
-        int weight = weight_func(e);
+        long long weight = weight_func(e);
         e.entry_type = ((weight == 0) * EMPTY_ENTRY) + ((!(weight == 0)) * e.entry_type);
         e.index = ((weight == 0) * e.index) + ((!(weight == 0)) * csum);
         traceMem->write(i, e);
@@ -72,15 +72,15 @@ static void obliv_expand(TraceMem<Table::TableEntry> *traceMem) {
 
     // TODO: simplify this logic
     Table::TableEntry last;
-    int dupl_off = 0, block_off = 0;
-    for (int i = 0; i < csum; i++) {
+    long long dupl_off = 0, block_off = 0;
+    for (long long i = 0; i < csum; i++) {
         Table::TableEntry e = traceMem->read(i);
         bool cond = e.entry_type != EMPTY_ENTRY;
         e = cond ? e : last;
         last = cond ? e : last;
         dupl_off = ((e.entry_type != EMPTY_ENTRY) * 0) + ((!(e.entry_type != EMPTY_ENTRY)) * dupl_off);
         e.index += dupl_off;
-        e.t1index = int(block_off / e.block_height) +
+        e.t1index = (long long)(block_off / e.block_height) +
                     (block_off % e.block_height) * e.block_width;
         dupl_off++;
         block_off++;

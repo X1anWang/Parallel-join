@@ -8,7 +8,7 @@
 #include "util.h"
 
 
-Table parseTables(char *buf, int& n1, int& n2) {
+Table parseTables(char *buf, long long& n1, long long& n2) {
     char *cp;
     cp = strtok(buf, " ");
     n1 = atoi(cp);
@@ -19,8 +19,8 @@ Table parseTables(char *buf, int& n1, int& n2) {
 
     printf("\n\nTable input length: %d\n\n", n1);
     
-    for (int i = 0; i < n1 + n2; i++) {
-        int j;//, d;
+    for (long long i = 0; i < n1 + n2; i++) {
+        long long j;//, d;
         j = atoi(strtok(NULL, " "));
         //d = atoi(strtok(NULL, "\n"));
         
@@ -36,8 +36,8 @@ Table parseTables(char *buf, int& n1, int& n2) {
     return t;
 }
 
-int my_len(char *data) {
-    int i = 0;
+long long my_len(char *data) {
+    long long i = 0;
 
     while ((data[i] != '\0') && (i < DATA_LENGTH)) i++;
     
@@ -46,13 +46,13 @@ int my_len(char *data) {
 
 /* output t0⋈t1, where t0 and t1 are aligned */
 void toString(char *out_buf, Table t0, Table t1) {
-    int m = t0.data.size;
+    long long m = t0.data.size;
     char *p = out_buf;
-    for (int i = 0; i < 0; i++) {
+    for (long long i = 0; i < 0; i++) {
         Table::TableEntry e0 = t0.data.read(i);
         Table::TableEntry e1 = t1.data.read(i);
-        int d0 = my_len(e0.data_attr);
-        int d1 = my_len(e1.data_attr);
+        long long d0 = my_len(e0.data_attr);
+        long long d1 = my_len(e1.data_attr);
         
         strncpy(p, e0.data_attr, d0);
         p += d0; p[0] = ' '; p += 1;

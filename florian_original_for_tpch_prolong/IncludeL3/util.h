@@ -5,7 +5,7 @@
 
 
 void reverse(char *s) {
-    int i, j;
+    long long i, j;
     char c;
 
     for (i = 0, j = strlen(s)-1; i<j; i++, j--) {
@@ -17,9 +17,9 @@ void reverse(char *s) {
 
 
 // itoa implementation from *The C Programming Language*
-void itoa(int n, char *s, int *len) {
-    int i = 0;
-    int sign;
+void itoa(long long n, char *s, long long *len) {
+    long long i = 0;
+    long long sign;
 
     if ((sign = n) < 0) {
         n = -n;
@@ -41,17 +41,17 @@ void itoa(int n, char *s, int *len) {
 
 
 // no longer required (SHA-256 is used for logs instead)
-uint32_t strm_hash(uint32_t key, uint32_t seed = 0x1a8b714c) {
-    constexpr uint32_t c1 = 0xCC9E2D51;
-    constexpr uint32_t c2 = 0x1B873593;
-    constexpr uint32_t n = 0xE6546B64;
+uint64_t strm_hash(uint64_t key, uint64_t seed = 0x1a8b714c) {
+    constexpr uint64_t c1 = 0xCC9E2D51;
+    constexpr uint64_t c2 = 0x1B873593;
+    constexpr uint64_t n = 0xE6546B64;
 
-    uint32_t k = key;
+    uint64_t k = key;
     k = k * c1;
     k = (k << 15) | (k >> 17);
     k *= c2;
 
-    uint32_t h = k ^ seed;
+    uint64_t h = k ^ seed;
     h = (h << 13) | (h >> 19);
     h = h*5 + n;
 

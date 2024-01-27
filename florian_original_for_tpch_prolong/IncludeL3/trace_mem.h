@@ -23,11 +23,11 @@ class TraceMem {
 
     struct LogEntry {
         char opType;
-        int i;
+        long long i;
     };
 
     private:
-        static int count;
+        static long long count;
 
         T *mem;
         long long num_rws = 0;
@@ -37,10 +37,10 @@ class TraceMem {
         vector<LogEntry> log;
 
     public:
-        const int mem_id;
-        int size;
+        const long long mem_id;
+        long long size;
 
-        TraceMem(int size) : mem_id(count++), size(size) {
+        TraceMem(long long size) : mem_id(count++), size(size) {
             #ifdef LOG_HASH
             sha = new SHA256_CTX();
             SHA256_Init(sha);
@@ -48,18 +48,18 @@ class TraceMem {
             mem = (T *)calloc(size, sizeof(T));
         }
 
-        void resize(int new_size) {
+        void resize(long long new_size) {
             mem = (T *)realloc(mem, sizeof(T) * new_size);
             if (new_size > size)
                 memset((T *)mem + size, 0, sizeof(T) * (new_size - size));
             size = new_size;
         }
 
-        T read(int i) {
+        T read(long long i) {
             assert(i >= 0 && i < size);
             #ifdef LOG_HASH
             num_rws++;
-            SHA256_Update(sha, &i, sizeof(int));
+            SHA256_Update(sha, &i, sizeof(long long));
             #endif
             #ifdef LOG_ALL
             num_rws++;
@@ -68,12 +68,12 @@ class TraceMem {
             return mem[i];
         }
 
-        void write(int i, T elt) {
+        void write(long long i, T elt) {
             assert(i >= 0 && i < size);
             #ifdef LOG_HASH
             num_rws++;
-            int ii = -1-i;
-            SHA256_Update(sha, &ii, sizeof(int));
+            long long ii = -1-i;
+            SHA256_Update(sha, &ii, sizeof(long long));
             #endif
             #ifdef LOG_ALL
             num_rws++;
@@ -82,7 +82,7 @@ class TraceMem {
             mem[i] = elt;
         }
 
-        uint32_t getTotalRW() {
+        uint64_t getTotalRW() {
             return num_rws;
         }
 
@@ -95,7 +95,7 @@ class TraceMem {
         #ifdef LOG_ALL
         string getTrace() {
             stringstream trace;
-            int i = 0;
+            long long i = 0;
             for (LogEntry entry : log) {
                 trace << (entry.opType == OP_READ ? "R" : "W") <<
                     ":" << mem_id << "[" << entry.i << "] ";
@@ -106,6 +106,6 @@ class TraceMem {
         #endif
 };
 
-template<typename T> int TraceMem<T>::count = 0;
+template<typename T> long long TraceMem<T>::count = 0;
 
 #endif

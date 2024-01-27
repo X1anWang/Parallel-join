@@ -8,13 +8,12 @@
 
 #define EMPTY_ENTRY false
 #define REG_ENTRY 1
-#define DATA_LENGTH 4
+#define DATA_LENGTH 16
 
 struct Table {
 
     struct TableEntry {
         // input data
-        //char data_attr[DATA_LENGTH];
 
         // auxillary data
         long long block_height;
@@ -22,31 +21,32 @@ struct Table {
         long long index;
         long long t1index;
         
-        int join_attr;
+        long long join_attr;
+        char data_attr[DATA_LENGTH];
         int table_id;
         int entry_type = EMPTY_ENTRY;
     };
 
     TraceMem<TableEntry> data;
 
-    Table(int size) : data(TraceMem<TableEntry>(size)) {
+    Table(long long size) : data(TraceMem<TableEntry>(size)) {
     }
 
     // index function
-    static int entry_ind(TableEntry e) {
-        int res = ((e.entry_type == EMPTY_ENTRY) * (-1)) + ((!(e.entry_type == EMPTY_ENTRY)) * e.index);
+    static long long entry_ind(TableEntry e) {
+        long long res = ((e.entry_type == EMPTY_ENTRY) * (-1)) + ((!(e.entry_type == EMPTY_ENTRY)) * e.index);
         return res;
     }
 
     // weight functions
 
-    static int entry_height(TableEntry e) {
-        int res = ((e.entry_type == EMPTY_ENTRY) * (-1)) + ((!(e.entry_type == EMPTY_ENTRY)) * e.block_height);
+    static long long entry_height(TableEntry e) {
+        long long res = ((e.entry_type == EMPTY_ENTRY) * (-1)) + ((!(e.entry_type == EMPTY_ENTRY)) * e.block_height);
         return res;
     }
 
-    static int entry_width(TableEntry e) {
-        int res = ((e.entry_type == EMPTY_ENTRY) * (-1)) + ((!(e.entry_type == EMPTY_ENTRY)) * e.block_width);
+    static long long entry_width(TableEntry e) {
+        long long res = ((e.entry_type == EMPTY_ENTRY) * (-1)) + ((!(e.entry_type == EMPTY_ENTRY)) * e.block_width);
         return res;
     }
 
@@ -54,17 +54,17 @@ struct Table {
     // comparison functions
 
     static bool attr_comp(TableEntry e1, TableEntry e2) {
-        int res = ((e1.join_attr == e2.join_attr) * (e1.table_id < e2.table_id)) + ((!(e1.join_attr == e2.join_attr)) * (e1.join_attr < e2.join_attr));
+        long long res = ((e1.join_attr == e2.join_attr) * (e1.table_id < e2.table_id)) + ((!(e1.join_attr == e2.join_attr)) * (e1.join_attr < e2.join_attr));
         return res;
     }
 
     static bool tid_comp(TableEntry e1, TableEntry e2) {
-        int res = ((e1.table_id == e2.table_id) * (((e1.join_attr == e2.join_attr) * (e1.data_attr < e2.data_attr)) + ((!(e1.join_attr == e2.join_attr)) * (e1.join_attr < e2.join_attr)))) + ((!(e1.table_id == e2.table_id)) * (e1.table_id < e2.table_id));
+        long long res = ((e1.table_id == e2.table_id) * (((e1.join_attr == e2.join_attr) * (e1.data_attr < e2.data_attr)) + ((!(e1.join_attr == e2.join_attr)) * (e1.join_attr < e2.join_attr)))) + ((!(e1.table_id == e2.table_id)) * (e1.table_id < e2.table_id));
         return res;
     }
 
     static bool t1_comp(TableEntry e1, TableEntry e2) {
-        int res = ((e1.join_attr == e2.join_attr) * (e1.t1index < e2.t1index)) + ((!(e1.join_attr == e2.join_attr)) * (e1.join_attr < e2.join_attr));
+        long long res = ((e1.join_attr == e2.join_attr) * (e1.t1index < e2.t1index)) + ((!(e1.join_attr == e2.join_attr)) * (e1.join_attr < e2.join_attr));
         return res;
     }
 

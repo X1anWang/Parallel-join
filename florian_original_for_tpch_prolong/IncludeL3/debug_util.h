@@ -10,8 +10,8 @@
 using namespace std;
 
 
-void print_table(Table& table, int n) {
-    for (int i = 0; i < min(n, table.data.size); i++) {
+void print_table(Table& table, long long n) {
+    for (long long i = 0; i < min(n, table.data.size); i++) {
         Table::TableEntry entry = table.data.read(i);
         if (i % 10 == 0) {
             cout << setw(4) << left << "ne"
