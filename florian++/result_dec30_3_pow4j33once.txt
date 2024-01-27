@@ -1,0 +1,24 @@
+
+The output file path is:/home/xian/input_2power_of_24_output.txt
+Entered enclave
+Florian++, our implementation w. parallel sort and oblivious memswap, random input.
+Input length: 8388608 and 8388608
+key and value size is: 16 (Bytes)
+Number of threads: 48
+0.801607
+0.126402
+0.805186
+0.100232
+0.879050
+0.704618
+2.365234
+0.068271
+0.032945
+0.350537
+
+Florian (our parallel implementation) Completed. length_result is 8388608
+
+Total time:6.234405
+
+Returned
+Exit enclave
