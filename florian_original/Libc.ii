@@ -1,0 +1,694 @@
+# 1 "Enclave/TrustedLibrary/Libc.cpp"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "Enclave/TrustedLibrary/Libc.cpp"
+# 33 "Enclave/TrustedLibrary/Libc.cpp"
+# 1 "/opt/intel/new-sgxsdk/include/tlibc/string.h" 1
+# 38 "/opt/intel/new-sgxsdk/include/tlibc/string.h"
+# 1 "/opt/intel/new-sgxsdk/include/tlibc/sys/cdefs.h" 1
+# 39 "/opt/intel/new-sgxsdk/include/tlibc/string.h" 2
+# 1 "/opt/intel/new-sgxsdk/include/tlibc/sys/_types.h" 1
+# 39 "/opt/intel/new-sgxsdk/include/tlibc/sys/_types.h"
+typedef signed char __int8_t;
+typedef unsigned char __uint8_t;
+typedef short __int16_t;
+typedef unsigned short __uint16_t;
+typedef int __int32_t;
+typedef unsigned int __uint32_t;
+
+typedef long __int64_t;
+typedef unsigned long __uint64_t;
+
+
+
+
+
+
+typedef __int8_t __int_least8_t;
+typedef __uint8_t __uint_least8_t;
+typedef __int16_t __int_least16_t;
+typedef __uint16_t __uint_least16_t;
+typedef __int32_t __int_least32_t;
+typedef __uint32_t __uint_least32_t;
+typedef __int64_t __int_least64_t;
+typedef __uint64_t __uint_least64_t;
+
+
+typedef __int8_t __int_fast8_t;
+typedef __uint8_t __uint_fast8_t;
+
+
+typedef long int __int_fast16_t;
+typedef unsigned long int __uint_fast16_t;
+typedef long int __int_fast32_t;
+typedef unsigned long int __uint_fast32_t;
+typedef long int __int_fast64_t;
+typedef unsigned long int __uint_fast64_t;
+# 84 "/opt/intel/new-sgxsdk/include/tlibc/sys/_types.h"
+typedef long __off_t;
+# 97 "/opt/intel/new-sgxsdk/include/tlibc/sys/_types.h"
+typedef __int64_t __intptr_t;
+typedef __uint64_t __uintptr_t;
+typedef __int64_t __ptrdiff_t;
+
+
+typedef unsigned long __size_t;
+typedef long __ssize_t;
+typedef double __double_t;
+typedef float __float_t;
+
+
+
+typedef long __clock_t;
+
+typedef long __time_t;
+typedef __builtin_va_list __va_list;
+typedef unsigned int __wint_t;
+
+typedef unsigned long int __wctype_t;
+typedef int * __wctrans_t;
+
+
+
+
+
+
+typedef struct {
+    int __c;
+    union {
+        __wint_t __wc;
+        char __wcb[4];
+    } __v;
+} __mbstate_t;
+
+
+typedef __int64_t __intmax_t;
+typedef __uint64_t __uintmax_t;
+# 40 "/opt/intel/new-sgxsdk/include/tlibc/string.h" 2
+
+
+typedef __size_t size_t;
+
+
+
+
+
+typedef int errno_t;
+# 59 "/opt/intel/new-sgxsdk/include/tlibc/string.h"
+extern "C" {
+
+void * memchr(const void *, int, size_t);
+int memcmp(const void *, const void *, size_t);
+void * memcpy_nochecks(void *, const void *, size_t);
+void * memcpy(void *, const void *, size_t);
+void * memcpy_verw(void *, const void *, size_t);
+void * memmove(void *, const void *, size_t);
+void * memmove_verw(void *, const void *, size_t);
+void * memset(void *, int, size_t);
+void * memset_verw(void *, int, size_t);
+char * strchr(const char *, int);
+int strcmp(const char *, const char *);
+int strcoll(const char *, const char *);
+size_t strcspn(const char *, const char *);
+char * strerror(int);
+size_t strlen(const char *);
+char * strncat(char *, const char *, size_t);
+int strncmp(const char *, const char *, size_t);
+char * strncpy(char *, const char *, size_t);
+char * strpbrk(const char *, const char *);
+char * strrchr(const char *, int);
+size_t strspn(const char *, const char *);
+char * strstr(const char *, const char *);
+char * strtok(char *, const char *);
+size_t strxfrm(char *, const char *, size_t);
+size_t strlcpy(char *, const char *, size_t);
+errno_t memset_s(void *s, size_t smax, int c, size_t n);
+errno_t memset_verw_s(void *s, size_t smax, int c, size_t n);
+
+
+
+
+;
+;
+
+
+
+
+char * strndup(const char *, size_t);
+size_t strnlen(const char *, size_t);
+int consttime_memequal(const void *b1, const void *b2, size_t len);
+
+
+
+
+int bcmp(const void *, const void *, size_t);
+void bcopy(const void *, void *, size_t);
+void bzero(void *, size_t);
+char * index(const char *, int);
+void * mempcpy(void *, const void *, size_t);
+char * rindex(const char *, int);
+char * stpncpy(char *dest, const char *src, size_t n);
+int strcasecmp(const char *, const char *);
+int strncasecmp(const char *, const char *, size_t);
+
+int ffs(int);
+int ffsl(long int);
+int ffsll(long long int);
+
+char * strtok_r(char *, const char *, char **);
+int strerror_r(int, char *, size_t);
+
+
+
+
+;
+;
+
+}
+# 34 "Enclave/TrustedLibrary/Libc.cpp" 2
+# 1 "/opt/intel/new-sgxsdk/include/sgx_cpuid.h" 1
+# 43 "/opt/intel/new-sgxsdk/include/sgx_cpuid.h"
+# 1 "/opt/intel/new-sgxsdk/include/sgx_defs.h" 1
+# 44 "/opt/intel/new-sgxsdk/include/sgx_cpuid.h" 2
+# 1 "/opt/intel/new-sgxsdk/include/sgx_error.h" 1
+# 37 "/opt/intel/new-sgxsdk/include/sgx_error.h"
+typedef enum _status_t
+{
+    SGX_SUCCESS = (0x00000000|(0x0000)),
+
+    SGX_ERROR_UNEXPECTED = (0x00000000|(0x0001)),
+    SGX_ERROR_INVALID_PARAMETER = (0x00000000|(0x0002)),
+    SGX_ERROR_OUT_OF_MEMORY = (0x00000000|(0x0003)),
+    SGX_ERROR_ENCLAVE_LOST = (0x00000000|(0x0004)),
+    SGX_ERROR_INVALID_STATE = (0x00000000|(0x0005)),
+    SGX_ERROR_FEATURE_NOT_SUPPORTED = (0x00000000|(0x0008)),
+    SGX_PTHREAD_EXIT = (0x00000000|(0x0009)),
+    SGX_ERROR_MEMORY_MAP_FAILURE = (0x00000000|(0x000a)),
+
+    SGX_ERROR_INVALID_FUNCTION = (0x00000000|(0x1001)),
+    SGX_ERROR_OUT_OF_TCS = (0x00000000|(0x1003)),
+    SGX_ERROR_ENCLAVE_CRASHED = (0x00000000|(0x1006)),
+    SGX_ERROR_ECALL_NOT_ALLOWED = (0x00000000|(0x1007)),
+    SGX_ERROR_OCALL_NOT_ALLOWED = (0x00000000|(0x1008)),
+    SGX_ERROR_STACK_OVERRUN = (0x00000000|(0x1009)),
+
+    SGX_ERROR_UNDEFINED_SYMBOL = (0x00000000|(0x2000)),
+    SGX_ERROR_INVALID_ENCLAVE = (0x00000000|(0x2001)),
+    SGX_ERROR_INVALID_ENCLAVE_ID = (0x00000000|(0x2002)),
+    SGX_ERROR_INVALID_SIGNATURE = (0x00000000|(0x2003)),
+    SGX_ERROR_NDEBUG_ENCLAVE = (0x00000000|(0x2004)),
+    SGX_ERROR_OUT_OF_EPC = (0x00000000|(0x2005)),
+    SGX_ERROR_NO_DEVICE = (0x00000000|(0x2006)),
+    SGX_ERROR_MEMORY_MAP_CONFLICT= (0x00000000|(0x2007)),
+    SGX_ERROR_INVALID_METADATA = (0x00000000|(0x2009)),
+    SGX_ERROR_DEVICE_BUSY = (0x00000000|(0x200c)),
+    SGX_ERROR_INVALID_VERSION = (0x00000000|(0x200d)),
+    SGX_ERROR_MODE_INCOMPATIBLE = (0x00000000|(0x200e)),
+    SGX_ERROR_ENCLAVE_FILE_ACCESS = (0x00000000|(0x200f)),
+    SGX_ERROR_INVALID_MISC = (0x00000000|(0x2010)),
+    SGX_ERROR_INVALID_LAUNCH_TOKEN = (0x00000000|(0x2011)),
+
+    SGX_ERROR_MAC_MISMATCH = (0x00000000|(0x3001)),
+    SGX_ERROR_INVALID_ATTRIBUTE = (0x00000000|(0x3002)),
+    SGX_ERROR_INVALID_CPUSVN = (0x00000000|(0x3003)),
+    SGX_ERROR_INVALID_ISVSVN = (0x00000000|(0x3004)),
+    SGX_ERROR_INVALID_KEYNAME = (0x00000000|(0x3005)),
+
+    SGX_ERROR_SERVICE_UNAVAILABLE = (0x00000000|(0x4001)),
+    SGX_ERROR_SERVICE_TIMEOUT = (0x00000000|(0x4002)),
+    SGX_ERROR_AE_INVALID_EPIDBLOB = (0x00000000|(0x4003)),
+    SGX_ERROR_SERVICE_INVALID_PRIVILEGE = (0x00000000|(0x4004)),
+    SGX_ERROR_EPID_MEMBER_REVOKED = (0x00000000|(0x4005)),
+    SGX_ERROR_UPDATE_NEEDED = (0x00000000|(0x4006)),
+    SGX_ERROR_NETWORK_FAILURE = (0x00000000|(0x4007)),
+    SGX_ERROR_AE_SESSION_INVALID = (0x00000000|(0x4008)),
+    SGX_ERROR_BUSY = (0x00000000|(0x400a)),
+    SGX_ERROR_MC_NOT_FOUND = (0x00000000|(0x400c)),
+    SGX_ERROR_MC_NO_ACCESS_RIGHT = (0x00000000|(0x400d)),
+    SGX_ERROR_MC_USED_UP = (0x00000000|(0x400e)),
+    SGX_ERROR_MC_OVER_QUOTA = (0x00000000|(0x400f)),
+    SGX_ERROR_KDF_MISMATCH = (0x00000000|(0x4011)),
+    SGX_ERROR_UNRECOGNIZED_PLATFORM = (0x00000000|(0x4012)),
+    SGX_ERROR_UNSUPPORTED_CONFIG = (0x00000000|(0x4013)),
+
+    SGX_ERROR_NO_PRIVILEGE = (0x00000000|(0x5002)),
+
+
+    SGX_ERROR_PCL_ENCRYPTED = (0x00000000|(0x6001)),
+    SGX_ERROR_PCL_NOT_ENCRYPTED = (0x00000000|(0x6002)),
+    SGX_ERROR_PCL_MAC_MISMATCH = (0x00000000|(0x6003)),
+    SGX_ERROR_PCL_SHA_MISMATCH = (0x00000000|(0x6004)),
+    SGX_ERROR_PCL_GUID_MISMATCH = (0x00000000|(0x6005)),
+
+
+    SGX_ERROR_FILE_BAD_STATUS = (0x00000000|(0x7001)),
+    SGX_ERROR_FILE_NO_KEY_ID = (0x00000000|(0x7002)),
+    SGX_ERROR_FILE_NAME_MISMATCH = (0x00000000|(0x7003)),
+    SGX_ERROR_FILE_NOT_SGX_FILE = (0x00000000|(0x7004)),
+    SGX_ERROR_FILE_CANT_OPEN_RECOVERY_FILE = (0x00000000|(0x7005)),
+    SGX_ERROR_FILE_CANT_WRITE_RECOVERY_FILE = (0x00000000|(0x7006)),
+    SGX_ERROR_FILE_RECOVERY_NEEDED = (0x00000000|(0x7007)),
+    SGX_ERROR_FILE_FLUSH_FAILED = (0x00000000|(0x7008)),
+    SGX_ERROR_FILE_CLOSE_FAILED = (0x00000000|(0x7009)),
+
+
+    SGX_ERROR_UNSUPPORTED_ATT_KEY_ID = (0x00000000|(0x8001)),
+    SGX_ERROR_ATT_KEY_CERTIFICATION_FAILURE = (0x00000000|(0x8002)),
+    SGX_ERROR_ATT_KEY_UNINITIALIZED = (0x00000000|(0x8003)),
+    SGX_ERROR_INVALID_ATT_KEY_CERT_DATA = (0x00000000|(0x8004)),
+    SGX_ERROR_PLATFORM_CERT_UNAVAILABLE = (0x00000000|(0x8005)),
+
+    SGX_INTERNAL_ERROR_ENCLAVE_CREATE_INTERRUPTED = (0x00000000|(0xF001)),
+
+} sgx_status_t;
+# 45 "/opt/intel/new-sgxsdk/include/sgx_cpuid.h" 2
+
+
+extern "C" {
+
+
+sgx_status_t sgx_cpuid(int cpuinfo[4], int leaf);
+sgx_status_t sgx_cpuidex(int cpuinfo[4], int leaf, int subleaf);
+
+
+}
+# 35 "Enclave/TrustedLibrary/Libc.cpp" 2
+
+# 1 "/opt/intel/new-sgxsdk/include/sgx_trts.h" 1
+# 36 "/opt/intel/new-sgxsdk/include/sgx_trts.h"
+# 1 "/opt/intel/new-sgxsdk/include/tlibc/stddef.h" 1
+# 43 "/opt/intel/new-sgxsdk/include/tlibc/stddef.h"
+typedef __ptrdiff_t ptrdiff_t;
+# 37 "/opt/intel/new-sgxsdk/include/sgx_trts.h" 2
+
+# 1 "/opt/intel/new-sgxsdk/include/tlibc/stdint.h" 1
+# 22 "/opt/intel/new-sgxsdk/include/tlibc/stdint.h"
+# 1 "/opt/intel/new-sgxsdk/include/tlibc/sys/stdint.h" 1
+# 28 "/opt/intel/new-sgxsdk/include/tlibc/sys/stdint.h"
+typedef __int8_t int8_t;
+
+
+
+
+typedef __uint8_t uint8_t;
+
+
+
+
+typedef __int16_t int16_t;
+
+
+
+
+typedef __uint16_t uint16_t;
+
+
+
+
+typedef __int32_t int32_t;
+
+
+
+
+typedef __uint32_t uint32_t;
+
+
+
+
+typedef __int64_t int64_t;
+
+
+
+
+typedef __uint64_t uint64_t;
+
+
+
+typedef __int_least8_t int_least8_t;
+typedef __uint_least8_t uint_least8_t;
+typedef __int_least16_t int_least16_t;
+typedef __uint_least16_t uint_least16_t;
+typedef __int_least32_t int_least32_t;
+typedef __uint_least32_t uint_least32_t;
+typedef __int_least64_t int_least64_t;
+typedef __uint_least64_t uint_least64_t;
+
+
+typedef __int_fast8_t int_fast8_t;
+typedef __uint_fast8_t uint_fast8_t;
+typedef __int_fast16_t int_fast16_t;
+typedef __uint_fast16_t uint_fast16_t;
+typedef __int_fast32_t int_fast32_t;
+typedef __uint_fast32_t uint_fast32_t;
+typedef __int_fast64_t int_fast64_t;
+typedef __uint_fast64_t uint_fast64_t;
+
+
+
+
+typedef __intptr_t intptr_t;
+
+
+
+
+typedef __uintptr_t uintptr_t;
+
+
+
+typedef __intmax_t intmax_t;
+typedef __uintmax_t uintmax_t;
+# 23 "/opt/intel/new-sgxsdk/include/tlibc/stdint.h" 2
+# 39 "/opt/intel/new-sgxsdk/include/sgx_trts.h" 2
+
+
+extern "C" {
+# 53 "/opt/intel/new-sgxsdk/include/sgx_trts.h"
+int sgx_is_within_enclave(const void *addr, size_t size);
+# 64 "/opt/intel/new-sgxsdk/include/sgx_trts.h"
+int sgx_is_outside_enclave(const void *addr, size_t size);
+
+
+
+
+
+
+
+int sgx_is_enclave_crashed(void) __attribute__((section(".nipx")));
+# 84 "/opt/intel/new-sgxsdk/include/sgx_trts.h"
+sgx_status_t sgx_read_rand(unsigned char *rand, size_t length_in_bytes);
+# 93 "/opt/intel/new-sgxsdk/include/sgx_trts.h"
+int sgx_rdpkru(uint32_t *val);
+# 102 "/opt/intel/new-sgxsdk/include/sgx_trts.h"
+int sgx_wrpkru(uint32_t val);
+
+
+}
+# 37 "Enclave/TrustedLibrary/Libc.cpp" 2
+# 1 "Enclave/TrustedLibrary/../Enclave.h" 1
+# 36 "Enclave/TrustedLibrary/../Enclave.h"
+# 1 "/opt/intel/new-sgxsdk/include/tlibc/stdlib.h" 1
+# 55 "/opt/intel/new-sgxsdk/include/tlibc/stdlib.h"
+typedef struct {
+    int quot;
+    int rem;
+} div_t;
+
+typedef struct {
+    long quot;
+    long rem;
+} ldiv_t;
+
+typedef struct {
+    long long quot;
+    long long rem;
+} lldiv_t;
+# 86 "/opt/intel/new-sgxsdk/include/tlibc/stdlib.h"
+extern "C" {
+
+__attribute__ ((__noreturn__)) void abort(void);
+int atexit(void (*)(void));
+int abs(int);
+double atof(const char *);
+int atoi(const char *);
+long atol(const char *);
+void * bsearch(const void *, const void *, size_t, size_t, int (*)(const void *, const void *));
+void * calloc(size_t, size_t);
+div_t div(int, int);
+void free(void *);
+long labs(long);
+ldiv_t ldiv(long, long);
+void * malloc(size_t);
+void * memalign(size_t, size_t);
+void qsort(void *, size_t, size_t, int (*)(const void *, const void *));
+void * realloc(void *, size_t);
+double strtod(const char *, char **);
+long strtol(const char *, char **, int);
+float strtof(const char *, char **);
+
+long long
+        atoll(const char *);
+long long
+        llabs(long long);
+lldiv_t
+        lldiv(long long, long long);
+long long
+        strtoll(const char *, char **, int);
+unsigned long
+        strtoul(const char *, char **, int);
+long double
+        strtold(const char *, char **);
+unsigned long long
+        strtoull(const char *, char **, int);
+
+int mblen(const char *, size_t);
+size_t mbstowcs(wchar_t *, const char *, size_t);
+int wctomb(char *, wchar_t);
+int mbtowc(wchar_t *, const char *, size_t);
+size_t wcstombs(char *, const wchar_t *, size_t);
+
+
+
+
+
+;
+;
+;
+;
+;
+;
+
+
+
+
+void * alloca(size_t);
+
+
+
+
+
+
+}
+# 37 "Enclave/TrustedLibrary/../Enclave.h" 2
+# 1 "/opt/intel/new-sgxsdk/include/tlibc/assert.h" 1
+# 57 "/opt/intel/new-sgxsdk/include/tlibc/assert.h"
+extern "C" {
+
+void __assert(const char *, int, const char *, const char *);
+
+}
+# 38 "Enclave/TrustedLibrary/../Enclave.h" 2
+
+
+extern "C" {
+
+
+void printf(const char *fmt, ...);
+void process_input(char *buf, size_t len);
+
+
+}
+# 38 "Enclave/TrustedLibrary/Libc.cpp" 2
+# 1 "Enclave/Enclave_t.h" 1
+
+
+
+
+# 1 "/opt/intel/new-sgxsdk/include/tlibc/wchar.h" 1
+# 84 "/opt/intel/new-sgxsdk/include/tlibc/wchar.h"
+typedef __mbstate_t mbstate_t;
+
+
+
+
+typedef __wint_t wint_t;
+# 101 "/opt/intel/new-sgxsdk/include/tlibc/wchar.h"
+extern "C" {
+
+wint_t btowc(int);
+int wctob(wint_t);
+size_t mbrlen(const char *, size_t, mbstate_t *);
+size_t mbrtowc(wchar_t *, const char *, size_t, mbstate_t *);
+int mbsinit(const mbstate_t *);
+size_t mbsrtowcs(wchar_t *, const char **, size_t, mbstate_t *);
+size_t wcrtomb(char *, wchar_t, mbstate_t *);
+wchar_t * wcschr(const wchar_t *, wchar_t);
+int wcscmp(const wchar_t *, const wchar_t *);
+int wcscoll(const wchar_t *, const wchar_t *);
+size_t wcscspn(const wchar_t *, const wchar_t *);
+size_t wcslen(const wchar_t *);
+wchar_t * wcsncat(wchar_t *, const wchar_t *, size_t);
+int wcsncmp(const wchar_t *, const wchar_t *, size_t);
+wchar_t * wcsncpy(wchar_t *, const wchar_t *, size_t);
+wchar_t * wcspbrk(const wchar_t *, const wchar_t *);
+wchar_t * wcsrchr(const wchar_t *, wchar_t);
+size_t wcsrtombs(char *, const wchar_t **, size_t, mbstate_t *);
+size_t wcsspn(const wchar_t *, const wchar_t *);
+wchar_t * wcsstr(const wchar_t *, const wchar_t *);
+wchar_t * wcstok(wchar_t *, const wchar_t *, wchar_t **);
+size_t wcsxfrm(wchar_t *, const wchar_t *, size_t);
+wchar_t * wmemchr(const wchar_t *, wchar_t, size_t);
+int wmemcmp(const wchar_t *, const wchar_t *, size_t);
+wchar_t * wmemcpy(wchar_t *, const wchar_t *, size_t);
+wchar_t * wmemmove(wchar_t *, const wchar_t *, size_t);
+wchar_t * wmemset(wchar_t *, wchar_t, size_t);
+
+int swprintf(wchar_t *, size_t, const wchar_t *, ...);
+int vswprintf(wchar_t *, size_t, const wchar_t *, __va_list);
+
+long double wcstold (const wchar_t *, wchar_t **);
+long long wcstoll (const wchar_t *, wchar_t **, int);
+unsigned long long wcstoull (const wchar_t *, wchar_t **, int);
+
+
+wchar_t * wcswcs(const wchar_t *, const wchar_t *);
+
+}
+# 6 "Enclave/Enclave_t.h" 2
+
+# 1 "/opt/intel/new-sgxsdk/include/sgx_edger8r.h" 1
+# 48 "/opt/intel/new-sgxsdk/include/sgx_edger8r.h"
+# 1 "/opt/intel/new-sgxsdk/include/sgx_eid.h" 1
+# 37 "/opt/intel/new-sgxsdk/include/sgx_eid.h"
+typedef uint64_t sgx_enclave_id_t;
+# 49 "/opt/intel/new-sgxsdk/include/sgx_edger8r.h" 2
+# 59 "/opt/intel/new-sgxsdk/include/sgx_edger8r.h"
+extern "C" {
+# 69 "/opt/intel/new-sgxsdk/include/sgx_edger8r.h"
+void* sgx_ocalloc(size_t size);
+
+
+
+
+
+
+
+void sgx_ocfree(void);
+# 88 "/opt/intel/new-sgxsdk/include/sgx_edger8r.h"
+sgx_status_t sgx_ecall(const sgx_enclave_id_t eid,
+                              const int index,
+                              const void* ocall_table,
+                              void* ms);
+sgx_status_t sgx_ecall_switchless(const sgx_enclave_id_t eid,
+                              const int index,
+                              const void* ocall_table,
+                              void* ms);
+# 104 "/opt/intel/new-sgxsdk/include/sgx_edger8r.h"
+sgx_status_t sgx_ocall(const unsigned int index,
+                              void* ms);
+sgx_status_t sgx_ocall_switchless(const unsigned int index,
+                              void* ms);
+
+
+}
+# 8 "Enclave/Enclave_t.h" 2
+
+# 1 "IncludeL3/user_types.h" 1
+# 38 "IncludeL3/user_types.h"
+typedef void *buffer_t;
+typedef int array_t[10];
+# 10 "Enclave/Enclave_t.h" 2
+
+
+
+
+
+
+extern "C" {
+
+
+
+
+typedef struct struct_foo_t {
+ uint32_t struct_foo_0;
+ uint64_t struct_foo_1;
+} struct_foo_t;
+
+
+typedef enum enum_foo_t {
+ ENUM_FOO_0 = 0,
+ ENUM_FOO_1 = 1,
+} enum_foo_t;
+
+
+
+typedef union union_foo_t {
+ uint32_t union_foo_0;
+ uint32_t union_foo_1;
+ uint64_t union_foo_3;
+} union_foo_t;
+
+
+void process_input(char* buf, size_t len);
+void ecall_type_char(char val);
+void ecall_type_int(int val);
+void ecall_type_float(float val);
+void ecall_type_double(double val);
+void ecall_type_size_t(size_t val);
+void ecall_type_wchar_t(wchar_t val);
+void ecall_type_struct(struct struct_foo_t val);
+void ecall_type_enum_union(enum enum_foo_t val1, union union_foo_t* val2);
+size_t ecall_pointer_user_check(void* val, size_t sz);
+void ecall_pointer_in(int* val);
+void ecall_pointer_out(int* val);
+void ecall_pointer_in_out(int* val);
+void ecall_pointer_string(char* str);
+void ecall_pointer_string_const(const char* str);
+void ecall_pointer_size(void* ptr, size_t len);
+void ecall_pointer_count(int* arr, int cnt);
+void ecall_pointer_isptr_readonly(buffer_t buf, size_t len);
+void ocall_pointer_attr(void);
+void ecall_array_user_check(int arr[4]);
+void ecall_array_in(int arr[4]);
+void ecall_array_out(int arr[4]);
+void ecall_array_in_out(int arr[4]);
+void ecall_array_isary(array_t arr);
+void ecall_function_calling_convs(void);
+void ecall_function_public(void);
+int ecall_function_private(void);
+void ecall_malloc_free(void);
+void ecall_sgx_cpuid(int cpuinfo[4], int leaf);
+void ecall_exception(void);
+void ecall_map(void);
+size_t ecall_increase_counter(void);
+void ecall_producer(void);
+void ecall_consumer(void);
+
+sgx_status_t ocall_print_string(const char* str);
+sgx_status_t init_time(void);
+sgx_status_t get_time(int if_print);
+sgx_status_t ocall_pointer_user_check(int* val);
+sgx_status_t ocall_pointer_in(int* val);
+sgx_status_t ocall_pointer_out(int* val);
+sgx_status_t ocall_pointer_in_out(int* val);
+sgx_status_t memccpy(void** retval, void* dest, const void* src, int val, size_t len);
+sgx_status_t ocall_function_allow(void);
+sgx_status_t sgx_oc_cpuidex(int cpuinfo[4], int leaf, int subleaf);
+sgx_status_t sgx_thread_wait_untrusted_event_ocall(int* retval, const void* self);
+sgx_status_t sgx_thread_set_untrusted_event_ocall(int* retval, const void* waiter);
+sgx_status_t sgx_thread_setwait_untrusted_events_ocall(int* retval, const void* waiter, const void* self);
+sgx_status_t sgx_thread_set_multiple_untrusted_events_ocall(int* retval, const void** waiters, size_t total);
+
+
+}
+# 39 "Enclave/TrustedLibrary/Libc.cpp" 2
+
+
+
+
+void ecall_malloc_free(void)
+{
+    void *ptr = malloc(100);
+    ((ptr != 0) ? (void)0 : __assert("Enclave/TrustedLibrary/Libc.cpp", 46, __func__, "ptr != NULL"));
+    memset(ptr, 0x0, 100);
+    free(ptr);
+}
+
+
+
+
+void ecall_sgx_cpuid(int cpuinfo[4], int leaf)
+{
+    sgx_status_t ret = sgx_cpuid(cpuinfo, leaf);
+    if (ret != SGX_SUCCESS)
+        abort();
+}

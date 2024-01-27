@@ -5,6 +5,7 @@
 #include "layout.h"
 #include "sort.h"
 #include "trace_mem.h"
+#include "foav.h"
 
 // TODO: do this in two passes, as in pseudocode from paper
 int write_block_sizes(int n, Table& table) {
@@ -67,7 +68,7 @@ static void obliv_expand(TraceMem<Table::TableEntry> *traceMem) {
     }
 
     obliv_distribute<Table::TableEntry, Table::entry_ind>(traceMem, csum);
-    //get_time(1);
+    get_time(1);
 
     // TODO: simplify this logic
     Table::TableEntry last;
@@ -75,6 +76,7 @@ static void obliv_expand(TraceMem<Table::TableEntry> *traceMem) {
     for (int i = 0; i < csum; i++) {
         Table::TableEntry e = traceMem->read(i);
         bool cond = e.entry_type != EMPTY_ENTRY;
+        FOAV_SAFE2_CNTXT(obliv_expand1, e, last)
         e = cond ? e : last;
         last = cond ? e : last;
         dupl_off = ((e.entry_type != EMPTY_ENTRY) * 0) + ((!(e.entry_type != EMPTY_ENTRY)) * dupl_off);

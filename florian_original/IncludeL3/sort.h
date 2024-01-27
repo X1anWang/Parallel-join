@@ -7,6 +7,7 @@
 #include <time.h>
 #endif
 #include "trace_mem.h"
+#include "foav.h"
 
 #define TIME_VAL ((clock() - begin) / (float)CLOCKS_PER_SEC)
 
@@ -24,10 +25,18 @@ inline int prev_pow_two(int x) {
 
 template <typename T, bool (*comp_func)(T e1, T e2)>
 void bitonic_compare(TraceMem<T> *traceMem, bool ascend, int i, int j) {
+    //FOAV_SAFE_CNTXT(bitonic_compare, i)
     T e1 = traceMem->read(i);
+    //FOAV_SAFE_CNTXT(bitonic_compare, j)
     T e2 = traceMem->read(j);
-    traceMem->write(i, (!comp_func(e1, e2) == ascend) ? e2 : e1);
-    traceMem->write(j, (!comp_func(e1, e2) == ascend) ? e1 : e2);
+    FOAV_SAFE2_CNTXT(bitonic_compare_enter1, e1, e2)
+    FOAV_SAFE2_CNTXT(bitonic_compare_enter2, i, j)
+    FOAV_SAFE_CNTXT(bitonic_compare_enter3, ascend)
+    traceMem->write2(i, (!comp_func(e1, e2) == ascend) ? e2 : e1);
+    //FOAV_SAFE_CNTXT(bitonic_compare, i)
+    //FOAV_SAFE_CNTXT(bitonic_compare, j)
+    traceMem->write2(j, (!comp_func(e1, e2) == ascend) ? e1 : e2);
+    //FOAV_SAFE_CNTXT(bitonic_compare, j)
 }
 
 
@@ -60,7 +69,10 @@ void bitonic_sort(TraceMem<T> *traceMem, bool ascend = true, int lo = 0, int hi 
 
 template <typename T, bool (*filter_func)(T e)>
 bool filter_func_comp(T e1, T e2) {
-    int res = (filter_func(e1) * true) + ((!filter_func(e1)) * (!filter_func(e2)));
+    int res = 0;
+    FOAV_SAFE_CNTXT(filter_func_comp1, res)
+    res = (filter_func(e1) * true) + ((!filter_func(e1)) * (!filter_func(e2)));
+    FOAV_SAFE_CNTXT(filter_func_comp2, res)
     return res;
 }
 
@@ -72,7 +84,10 @@ void obliv_filter(TraceMem<T> *traceMem) {
 
 template <typename T, int (*ind_func)(T e)>
 bool ind_func_comp(T e1, T e2) {
-    int res = ((ind_func(e1) == (-1)) * false) + ((!(ind_func(e1) == (-1))) * (((ind_func(e2) == (-1)) * true) + ((!(ind_func(e2) == (-1))) * (ind_func(e1) < ind_func(e2)))));
+    int res = 0;
+    FOAV_SAFE_CNTXT(ind_func_comp1, res)
+    res = ((ind_func(e1) == (-1)) * false) + ((!(ind_func(e1) == (-1))) * (((ind_func(e2) == (-1)) * true) + ((!(ind_func(e2) == (-1))) * (ind_func(e1) < ind_func(e2)))));
+    FOAV_SAFE_CNTXT(ind_func_comp2, res)
     return res;
 }
 
@@ -103,6 +118,9 @@ void obliv_distribute(TraceMem<T> *traceMem, int m) {
             __sync_synchronize();
             assert(dest_i < m);
             T e1 = traceMem->read(i + j);
+            FOAV_SAFE2_CNTXT(oblivious_distribute1, i, j)
+            FOAV_SAFE2_CNTXT(oblivious_distribute2, e, e1)
+            FOAV_SAFE2_CNTXT(oblivious_distribute3, dest_i, e1)
             traceMem->write(i, dest_i >= i + j ? e1 : e);
             traceMem->write(i + j, dest_i >= i + j ? e : e1);
         }

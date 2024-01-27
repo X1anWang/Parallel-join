@@ -30,51 +30,22 @@
  */
 
 
-#include <stdarg.h>
-#include <stdio.h>      /* vsnprintf */
-#include <string.h>
-#include <stdint.h>
+#include "../App.h"
+#include "Enclave_u.h"
 
-#include <vector>
-
-#include "Enclave.h"
-#include "Enclave_t.h"  /* print_string */
-
-#include "join.h"
-#include "layout.h"
-#include "table_util.h"
-
-
-/* 
- * printf: 
- *   Invokes OCALL to display the enclave buffer to the terminal.
+/* ecall_libc_functions:
+ *   Invokes standard C functions.
  */
-void printf(const char *fmt, ...)
+void ecall_libc_functions(void)
 {
-    char buf[BUFSIZ] = {'\0'};
-    va_list ap;
-    va_start(ap, fmt);
-    vsnprintf(buf, BUFSIZ, fmt, ap);
-    va_end(ap);
-    ocall_print_string(buf);
-}
+    sgx_status_t ret = SGX_ERROR_UNEXPECTED;
 
-void process_input(char *buf, size_t len)
-{   
-    printf("Enclave begin\n");
+    ret = ecall_malloc_free(global_eid);
+    if (ret != SGX_SUCCESS)
+        abort();
     
-    // read input as one concatenated table
-    int n1, n2;
-    Table t = parseTables(buf, n1, n2);
-    int n = n1 + n2;
-    
-    init_time();
-    Table t0(n1), t1(n2);
-
-    join(t, t0, t1);
-    
-    // write output
-    toString(buf, t0, t1);
-    
-    printf("Enclave end\n");
+    int cpuid[4] = {0x0, 0x0, 0x0, 0x0};
+    ret = ecall_sgx_cpuid(global_eid, cpuid, 0x0);
+    if (ret != SGX_SUCCESS)
+        abort();
 }

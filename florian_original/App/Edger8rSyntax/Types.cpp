@@ -30,51 +30,48 @@
  */
 
 
-#include <stdarg.h>
-#include <stdio.h>      /* vsnprintf */
-#include <string.h>
-#include <stdint.h>
+#include "../App.h"
+#include "Enclave_u.h"
 
-#include <vector>
-
-#include "Enclave.h"
-#include "Enclave_t.h"  /* print_string */
-
-#include "join.h"
-#include "layout.h"
-#include "table_util.h"
-
-
-/* 
- * printf: 
- *   Invokes OCALL to display the enclave buffer to the terminal.
+/* edger8r_type_attributes:
+ *   Invokes ECALLs declared with basic types.
  */
-void printf(const char *fmt, ...)
+void edger8r_type_attributes(void)
 {
-    char buf[BUFSIZ] = {'\0'};
-    va_list ap;
-    va_start(ap, fmt);
-    vsnprintf(buf, BUFSIZ, fmt, ap);
-    va_end(ap);
-    ocall_print_string(buf);
-}
+    sgx_status_t ret = SGX_ERROR_UNEXPECTED;
 
-void process_input(char *buf, size_t len)
-{   
-    printf("Enclave begin\n");
-    
-    // read input as one concatenated table
-    int n1, n2;
-    Table t = parseTables(buf, n1, n2);
-    int n = n1 + n2;
-    
-    init_time();
-    Table t0(n1), t1(n2);
+    ret = ecall_type_char(global_eid, (char)0x12);
+    if (ret != SGX_SUCCESS)
+        abort();
 
-    join(t, t0, t1);
+    ret = ecall_type_int(global_eid, (int)1234);
+    if (ret != SGX_SUCCESS)
+        abort();
+
+    ret = ecall_type_float(global_eid, (float)1234.0);
+    if (ret != SGX_SUCCESS)
+        abort();
+
+    ret = ecall_type_double(global_eid, (double)1234.5678);
+    if (ret != SGX_SUCCESS)
+        abort();
+
+    ret = ecall_type_size_t(global_eid, (size_t)12345678);
+    if (ret != SGX_SUCCESS)
+        abort();
+
+    ret = ecall_type_wchar_t(global_eid, (wchar_t)0x1234);
+    if (ret != SGX_SUCCESS)
+        abort();
+
+    struct struct_foo_t g = {1234, 5678};
+    ret = ecall_type_struct(global_eid, g);
+    if (ret != SGX_SUCCESS)
+        abort();
     
-    // write output
-    toString(buf, t0, t1);
-    
-    printf("Enclave end\n");
+    union union_foo_t val = {0};
+    ret = ecall_type_enum_union(global_eid, ENUM_FOO_0, &val);
+    if (ret != SGX_SUCCESS)
+        abort();
+    assert(val.union_foo_0 == 2);
 }

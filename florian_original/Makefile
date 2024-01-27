@@ -57,7 +57,7 @@ endif
 
 ######## SGX SDK Settings ########
 
-SGX_SDK ?= /opt/intel/sgxsdk
+SGX_SDK ?= /opt/intel/new-sgxsdk
 SGX_MODE ?= HW
 SGX_ARCH ?= x64
 SGX_DEBUG ?= 0
@@ -87,10 +87,8 @@ $(error Cannot set SGX_DEBUG and SGX_PRERELEASE at the same time!!)
 endif
 endif
 
-SGX_COMMON_CFLAGS += -O3
-
 ifeq ($(SGX_DEBUG), 1)
-		SGX_COMMON_CFLAGS += -O3 -g $(WFLAGS)
+		SGX_COMMON_CFLAGS += -O0 -g $(WFLAGS)
 else
 		SGX_COMMON_CFLAGS += -O3 $(WFLAGS)
 endif
@@ -275,7 +273,7 @@ Enclave/Enclave_t.o: Enclave/Enclave_t.c
 	@echo "CC   <=  $<"
 
 Enclave/%.o: Enclave/%.cpp
-	@$(CXX) $(Enclave_Cpp_Flags) -c $< -o $@
+	@$(CXX) $(Enclave_Cpp_Flags) -c -save-temps $< -o $@
 	@echo "CXX  <=  $<"
 
 $(Enclave_Name): Enclave/Enclave_t.o $(Enclave_Cpp_Objects)

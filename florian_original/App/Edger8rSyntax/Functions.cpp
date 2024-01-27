@@ -30,51 +30,43 @@
  */
 
 
-#include <stdarg.h>
-#include <stdio.h>      /* vsnprintf */
-#include <string.h>
-#include <stdint.h>
+#include "../App.h"
+#include "Enclave_u.h"
 
-#include <vector>
+/* No need to implement memccpy here! */
 
-#include "Enclave.h"
-#include "Enclave_t.h"  /* print_string */
-
-#include "join.h"
-#include "layout.h"
-#include "table_util.h"
-
-
-/* 
- * printf: 
- *   Invokes OCALL to display the enclave buffer to the terminal.
+/* edger8r_function_attributes:
+ *   Invokes ECALL declared with calling convention attributes.
+ *   Invokes ECALL declared with [public].
  */
-void printf(const char *fmt, ...)
+void edger8r_function_attributes(void)
 {
-    char buf[BUFSIZ] = {'\0'};
-    va_list ap;
-    va_start(ap, fmt);
-    vsnprintf(buf, BUFSIZ, fmt, ap);
-    va_end(ap);
-    ocall_print_string(buf);
+    sgx_status_t ret = SGX_ERROR_UNEXPECTED;
+
+    ret = ecall_function_calling_convs(global_eid);
+    if (ret != SGX_SUCCESS)
+        abort();
+    
+    ret = ecall_function_public(global_eid);
+    if (ret != SGX_SUCCESS)
+        abort();
+    
+    /* user shall not invoke private function here */
+    int runned = 0;
+    ret = ecall_function_private(global_eid, &runned);
+    if (ret != SGX_ERROR_ECALL_NOT_ALLOWED || runned != 0)
+        abort();
 }
 
-void process_input(char *buf, size_t len)
-{   
-    printf("Enclave begin\n");
+/* ocall_function_allow:
+ *   The OCALL invokes the [allow]ed ECALL 'edger8r_private'.
+ */
+void ocall_function_allow(void)
+{
+    int runned = 0;
+    sgx_status_t ret = SGX_ERROR_UNEXPECTED;
     
-    // read input as one concatenated table
-    int n1, n2;
-    Table t = parseTables(buf, n1, n2);
-    int n = n1 + n2;
-    
-    init_time();
-    Table t0(n1), t1(n2);
-
-    join(t, t0, t1);
-    
-    // write output
-    toString(buf, t0, t1);
-    
-    printf("Enclave end\n");
+    ret = ecall_function_private(global_eid, &runned);
+    if (ret != SGX_SUCCESS || runned != 1)
+        abort();
 }

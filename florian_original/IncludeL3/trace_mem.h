@@ -5,6 +5,7 @@
 #include <string>
 #include <assert.h>
 #include <string.h>
+#include "foav.h"
 #ifdef LOG_ALL
 #include <sstream>
 #endif
@@ -66,6 +67,26 @@ class TraceMem {
             log.push_back({OP_READ, i});
             #endif
             return mem[i];
+        }
+
+        void write2(int i, T elt) {
+            assert(i >= 0 && i < size);
+            #ifdef LOG_HASH
+            num_rws++;
+            int ii = -1-i;
+            SHA256_Update(sha, &ii, sizeof(int));
+            #endif
+            #ifdef LOG_ALL
+            num_rws++;
+            log.push_back({OP_WRITE, i});
+            #endif
+            FOAV_SAFE_CNTXT(write_before, i)
+            FOAV_SAFE_CNTXT(write_before, mem[i])
+            FOAV_SAFE_CNTXT(write_before, elt)
+            mem[i] = elt;
+            FOAV_SAFE_CNTXT(write_after, i)
+            FOAV_SAFE_CNTXT(write_after, mem[i])
+            FOAV_SAFE_CNTXT(write_after, elt)
         }
 
         void write(int i, T elt) {

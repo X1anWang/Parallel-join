@@ -30,51 +30,45 @@
  */
 
 
+#ifndef _APP_H_
+#define _APP_H_
+
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <stdarg.h>
-#include <stdio.h>      /* vsnprintf */
-#include <string.h>
-#include <stdint.h>
 
-#include <vector>
+#include "sgx_error.h"       /* sgx_status_t */
+#include "sgx_eid.h"     /* sgx_enclave_id_t */
 
-#include "Enclave.h"
-#include "Enclave_t.h"  /* print_string */
+#ifndef TRUE
+# define TRUE 1
+#endif
 
-#include "join.h"
-#include "layout.h"
-#include "table_util.h"
+#ifndef FALSE
+# define FALSE 0
+#endif
 
+# define TOKEN_FILENAME   "enclave.token"
+# define ENCLAVE_FILENAME "enclave.signed.so"
 
-/* 
- * printf: 
- *   Invokes OCALL to display the enclave buffer to the terminal.
- */
-void printf(const char *fmt, ...)
-{
-    char buf[BUFSIZ] = {'\0'};
-    va_list ap;
-    va_start(ap, fmt);
-    vsnprintf(buf, BUFSIZ, fmt, ap);
-    va_end(ap);
-    ocall_print_string(buf);
+extern sgx_enclave_id_t global_eid;    /* global enclave id */
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+void edger8r_array_attributes(void);
+void edger8r_type_attributes(void);
+void edger8r_pointer_attributes(void);
+void edger8r_function_attributes(void);
+
+void ecall_libc_functions(void);
+void ecall_libcxx_functions(void);
+void ecall_thread_functions(void);
+
+#if defined(__cplusplus)
 }
+#endif
 
-void process_input(char *buf, size_t len)
-{   
-    printf("Enclave begin\n");
-    
-    // read input as one concatenated table
-    int n1, n2;
-    Table t = parseTables(buf, n1, n2);
-    int n = n1 + n2;
-    
-    init_time();
-    Table t0(n1), t1(n2);
-
-    join(t, t0, t1);
-    
-    // write output
-    toString(buf, t0, t1);
-    
-    printf("Enclave end\n");
-}
+#endif /* !_APP_H_ */

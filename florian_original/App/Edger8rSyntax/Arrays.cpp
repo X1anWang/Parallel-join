@@ -30,51 +30,63 @@
  */
 
 
-#include <stdarg.h>
-#include <stdio.h>      /* vsnprintf */
-#include <string.h>
-#include <stdint.h>
+#include "../App.h"
+#include "Enclave_u.h"
 
-#include <vector>
-
-#include "Enclave.h"
-#include "Enclave_t.h"  /* print_string */
-
-#include "join.h"
-#include "layout.h"
-#include "table_util.h"
-
-
-/* 
- * printf: 
- *   Invokes OCALL to display the enclave buffer to the terminal.
+/* edger8r_array_attributes:
+ *   Invokes ECALLs declared with array attributes.
  */
-void printf(const char *fmt, ...)
+void edger8r_array_attributes(void)
 {
-    char buf[BUFSIZ] = {'\0'};
-    va_list ap;
-    va_start(ap, fmt);
-    vsnprintf(buf, BUFSIZ, fmt, ap);
-    va_end(ap);
-    ocall_print_string(buf);
-}
+    sgx_status_t ret = SGX_ERROR_UNEXPECTED;
 
-void process_input(char *buf, size_t len)
-{   
-    printf("Enclave begin\n");
-    
-    // read input as one concatenated table
-    int n1, n2;
-    Table t = parseTables(buf, n1, n2);
-    int n = n1 + n2;
-    
-    init_time();
-    Table t0(n1), t1(n2);
+    /* user_check */
+    int arr1[4] = {0, 1, 2, 3};
+    ret = ecall_array_user_check(global_eid, arr1);
+    if (ret != SGX_SUCCESS)
+        abort();
 
-    join(t, t0, t1);
+    /* make sure arr1 is changed */
+    for (int i = 0; i < 4; i++)
+        assert(arr1[i] == (3 - i));
+
+    /* in */
+    int arr2[4] = {0, 1, 2, 3};
+    ret = ecall_array_in(global_eid, arr2);
+    if (ret != SGX_SUCCESS)
+        abort();
     
-    // write output
-    toString(buf, t0, t1);
+    /* arr2 is not changed */
+    for (int i = 0; i < 4; i++)
+        assert(arr2[i] == i);
     
-    printf("Enclave end\n");
+    /* out */
+    int arr3[4] = {0, 1, 2, 3};
+    ret = ecall_array_out(global_eid, arr3);
+    if (ret != SGX_SUCCESS)
+        abort();
+    
+    /* arr3 is changed */
+    for (int i = 0; i < 4; i++)
+        assert(arr3[i] == (3 - i));
+    
+    /* in, out */
+    int arr4[4] = {0, 1, 2, 3};
+    ret = ecall_array_in_out(global_eid, arr4);
+    if (ret != SGX_SUCCESS)
+        abort();
+    
+    /* arr4 is changed */
+    for (int i = 0; i < 4; i++)
+        assert(arr4[i] == (3 - i));
+    
+    /* isary */
+    array_t arr5 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    ret = ecall_array_isary(global_eid, arr5);
+    if (ret != SGX_SUCCESS)
+        abort();
+    
+    /* arr5 is changed */
+    for (int i = 0; i < 10; i++)
+        assert(arr5[i] == (9 - i));
 }

@@ -2,9 +2,10 @@
 
 Some parts need to update upon recent demands.
 
-Experiment result tab - 1:
+Experiment result tab 1 - single thread:
 
 Generate synthesized dataset -->
+
 cd ~/;
 python3 gen.py;
 
