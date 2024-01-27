@@ -6,25 +6,25 @@
 #include "trace_mem.h"
 
 
-#define EMPTY_ENTRY false
+#define EMPTY_ENTRY 0
 #define REG_ENTRY 1
 #define DATA_LENGTH 4
 
 struct Table {
 
     struct TableEntry {
+        int entry_type = EMPTY_ENTRY;
+
         // input data
-        long long join_attr;
-        //char data_attr[DATA_LENGTH];
+        int table_id;
+        int join_attr;
+        char data_attr[DATA_LENGTH];
 
         // auxillary data
-        long long block_height;
-        long long block_width;
-        long long index;
-        long long t1index;
-
-        int table_id;
-        bool entry_type = EMPTY_ENTRY;
+        int block_height;
+        int block_width;
+        int index;
+        int t1index;
     };
 
     TraceMem<TableEntry> data;
