@@ -8,15 +8,15 @@
 
 #define ELEM_SIZE 128
 #define ELEM_STRUCT_SIZE 19
-#define DATA_LENGTH 300
+#define DATA_LENGTH 24
 #define max_output_bytes 1073741824
 
 typedef int ojoin_int_type;
 
 typedef struct elem {
     int key;
-    char data[DATA_LENGTH];
     float sum;
+    char data[DATA_LENGTH];
 } elem_t;
 
 typedef struct ele2m {

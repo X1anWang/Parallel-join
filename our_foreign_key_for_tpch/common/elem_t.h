@@ -8,16 +8,16 @@
 
 #define ELEM_SIZE 128
 #define ELEM_STRUCT_SIZE 19
-#define DATA_LENGTH 4
+#define DATA_LENGTH 2
 
 typedef long long ojoin_int_type;
 
 typedef struct elem {
-    long long key;
+    int key;
     long long m0;
     long long m1;
     long long j_order;
-    char data[DATA_LENGTH];
+    char data[2];
     bool has_value;
     bool table_0;
 } elem_t;

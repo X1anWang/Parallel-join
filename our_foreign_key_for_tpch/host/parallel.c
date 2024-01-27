@@ -18,7 +18,7 @@
 //#define OE_DEBUG
 //#define OE_SIMULATION
 
-#define MAX_BUF_SIZE 14000000
+#define MAX_BUF_SIZE 2147483648
 
 static int world_rank;
 static int world_size;
@@ -113,6 +113,7 @@ fclose(input_file);
 
     printf("\nExit enclave\n");
 
+    free(buf);
     //fwrite(buf, 1, strlen(buf), output_file);
     fclose(output_file);
     MPI_Barrier(MPI_COMM_WORLD);

@@ -8,14 +8,14 @@
 
 #define ELEM_SIZE 128
 #define ELEM_STRUCT_SIZE 19
-#define DATA_LENGTH 300
+#define DATA_LENGTH 27
 
 typedef int ojoin_int_type;
 
 typedef struct elem {
-    int key;
     char data[DATA_LENGTH];
     bool has_value;
+    int key;
 } elem_t;
 
 typedef struct ele2m {
@@ -36,6 +36,6 @@ typedef struct ele2m {
     //unsigned char unused[ELEM_SIZE - ELEM_STRUCT_SIZE];
 } ele2m_t;
 
-//static_assert(sizeof(elem_t) == ELEM_SIZE, "Element should be 128 bytes");
+static_assert(sizeof(elem_t) == 32, "Element should be 32 bytes");
 
 #endif /* common/elem_t.h */
