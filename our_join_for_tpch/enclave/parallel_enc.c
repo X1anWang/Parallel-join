@@ -283,7 +283,7 @@ int ecall_ojoin_alloc_arr(int length_max_, int key_scope) {
     */
         arr[0].key = 8;
         //arr[0].true_key = 8;
-        //arr[0].data[0] = 8;
+        arr[0].data[0] = 8;
         arr[0].has_value = true;
         arr[0].table_0 = true;
         for (long long i = 1; i < length_max; i++) {
@@ -297,7 +297,7 @@ int ecall_ojoin_alloc_arr(int length_max_, int key_scope) {
                 //arr[i].data = 8;
                 arr[i].table_0 = false;
             }
-            //arr[i].data[0] = 7;
+            arr[i].data[0] = 7;
             arr[i].has_value = true;
         }
 
@@ -351,13 +351,13 @@ int ecall_scalable_oblivious_join(char *input_path, size_t len) {
     //printf("\nlength 2 is:%d", length2);
     for (long long i = 0; i < length1; i++) {
         arr[i].key = atoi(strtok(NULL, " "));
-        //strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);
+        strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);
         arr[i].table_0 = true;
         //printf("\n%dth table 0 read key:%d read data:%s", i, arr[i].key, arr[i].data);
     }
     for (long long i = length1; i < length1 + length2; i++) {
         arr[i].key = atoi(strtok(NULL, " "));
-        //strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);
+        strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);
         arr[i].table_0 = false;
         //printf("\n%dth table 1 read key:%d read data:%s", i, arr[i].key, arr[i].data);
     }

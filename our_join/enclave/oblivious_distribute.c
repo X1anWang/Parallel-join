@@ -362,8 +362,8 @@ void oblivious_distribute_inner_parallel(ojoin_int_type *buf, ojoin_int_type *in
     R_ptr = buf + n2;
     R_ptr_index = index_target + n2;
 
-    ojoin_int_type lthreads = nthreads/2;
-    ojoin_int_type rthreads = nthreads - lthreads;
+    ojoin_int_type rthreads = nthreads * n1 / N;
+    ojoin_int_type lthreads = nthreads - rthreads;
 
     struct oblivious_distribute_inner_2power_parallel_args right_args = {///
         R_ptr, R_ptr_index, index_start_cur+n2, (n1 - n2 + m2) % n1, n1, rthreads
@@ -713,8 +713,8 @@ void oblivious_distribute_inner_parallel_elem(elem_t *buf, ojoin_int_type *index
     }
 
 
-    ojoin_int_type lthreads = nthreads/2;
-    ojoin_int_type rthreads = nthreads - lthreads;
+    ojoin_int_type rthreads = nthreads * n1 / N;
+    ojoin_int_type lthreads = nthreads - rthreads;
 
     struct oblivious_distribute_inner_2power_parallel_args_elem right_args = {
         buf + n2, index_target + n2, index_start_cur+n2, ((n1 - n2 + m2) % n1), n1, rthreads

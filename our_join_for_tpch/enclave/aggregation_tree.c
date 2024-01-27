@@ -572,11 +572,9 @@ void aggregation_tree_dup_1_downward(void *voidargs) {
     //tree_node_2[cur_tree_node].last_elem = idx_end - 1;
     //o_memcpy(tree_node_2[cur_tree_node].last_element, arr + idx_end - 1, sizeof(*arr), true);
     tree_node_2[cur_tree_node].k_l = arr[idx_end - 1].key;
-    /*
     for (long long u = 0; u < DATA_LENGTH; u++) {
         tree_node_2[cur_tree_node].d_l[u] = arr[idx_end - 1].data[u];
     }
-    */
     tree_node_2[cur_tree_node].has_value_l = arr[idx_end - 1].has_value;
     /*
     o_memcpy(tree_node_2[cur_tree_node].first_elem, arr + idx_start, sizeof(*arr), true);
@@ -654,11 +652,9 @@ void aggregation_tree_dup_1_downward(void *voidargs) {
     elem_t* previous_element = calloc(1, sizeof(*previous_element));
     previous_element->key = tree_node_2[order_thread].k_p;
     previous_element->has_value = tree_node_2[order_thread].has_value_p;
-    /*
     for (long long u = 0; u < DATA_LENGTH; u++) {
         previous_element->data[u] = tree_node_2[order_thread].d_p[u];
     }
-    */
     //prlong longf("\n%dth node key:%d data:%s", order_thread, tree_node_2[order_thread].k_p, tree_node_2[order_thread].d_p);
     for (long long i = idx_start; i < idx_end; i++) {
         o_memcpy(arr + i, previous_element, sizeof(*arr), !arr[i].has_value);

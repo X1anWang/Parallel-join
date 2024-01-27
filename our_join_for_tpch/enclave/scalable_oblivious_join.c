@@ -300,7 +300,7 @@ void scalable_oblivious_join(elem_t *arr, long long length1, long long length2, 
     */
     //printf("\n\n--> Main Check 1 ");
     length_result = index_target[length1 - 1] + arr[length1 - 1].table_0 * arr[length1 - 1].m1;
-    //printf("\n\n--> Main Check 2 length_result:%lld", length_result);
+    printf("\n--> Main Check 2 length_result:%lld\n", length_result);
     //printf("\nStep 4 - 1\n");
     elem_t *arr1 = calloc(length_result, sizeof(*arr1));
     elem_t *arr2 = calloc(length_result, sizeof(*arr2));
@@ -391,7 +391,7 @@ void scalable_oblivious_join(elem_t *arr, long long length1, long long length2, 
     // Write out
     char *char_current = output_path;
     //printf("\nresult length is:%d\n",length_result);
-    for (long long i = 0; i < length_result; i++) {
+    for (long long i = 0; i < 10; i++) {
         long long key1 = arr1[i].key;
         long long key2 = arr2[i].key;
         //printf("\n Write out key1:%d key2:%d data1:%s data2:%s", key1, key2, arr1[i].data, arr2[i].data);
@@ -401,17 +401,17 @@ void scalable_oblivious_join(elem_t *arr, long long length1, long long length2, 
         long long str1_len, str2_len;
         itoa(key1, string_key1, &str1_len);
         itoa(key2, string_key2, &str2_len);
-        //long long data_len1 = my_len(arr1[i].data);
-        //long long data_len2 = my_len(arr2[i].data);
+        long long data_len1 = my_len(arr1[i].data);
+        long long data_len2 = my_len(arr2[i].data);
         
         strncpy(char_current, string_key1, str1_len);
         char_current += str1_len; char_current[0] = ' '; char_current += 1;
-        //strncpy(char_current, arr1[i].data, data_len1);
-        //char_current += data_len1; char_current[0] = ' '; char_current += 1;
+        strncpy(char_current, arr1[i].data, data_len1);
+        char_current += data_len1; char_current[0] = ' '; char_current += 1;
         strncpy(char_current, string_key2, str2_len);
         char_current += str2_len; char_current[0] = ' '; char_current += 1;
-        //strncpy(char_current, arr2[i].data, data_len2);
-        //char_current += data_len2; char_current[0] = '\n'; char_current += 1;
+        strncpy(char_current, arr2[i].data, data_len2);
+        char_current += data_len2; char_current[0] = '\n'; char_current += 1;
     }
     char_current[0] = '\0';
 

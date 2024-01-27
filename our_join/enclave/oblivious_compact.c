@@ -307,8 +307,9 @@ void oblivious_compact_inner_parallel(ojoin_int_type *buf, ojoin_int_type N, ojo
     ojoin_int_type *L_ptr = buf;
     ojoin_int_type *R_ptr = buf + (n2 * block_size);
 
-    ojoin_int_type lthreads = nthreads/2;
-    ojoin_int_type rthreads = nthreads - lthreads;
+    ojoin_int_type rthreads = nthreads * n1 / N;
+    ojoin_int_type lthreads = nthreads - rthreads;
+    
 
     struct oblivious_compact_inner_2power_parallel_args right_args = {
         R_ptr, n1, block_size, n1 - n2 + m2, selected + n2, selected_count + n2,
@@ -658,8 +659,8 @@ void oblivious_compact_inner_parallel_elem(elem_t *buf, ojoin_int_type N, ojoin_
     elem_t *L_ptr = buf;
     elem_t *R_ptr = buf + (n2 * block_size);
 
-    ojoin_int_type lthreads = nthreads/2;
-    ojoin_int_type rthreads = nthreads - lthreads;
+    ojoin_int_type rthreads = nthreads * n1 / N;
+    ojoin_int_type lthreads = nthreads - rthreads;
 
     struct oblivious_compact_inner_2power_parallel_args_elem right_args = {
         R_ptr, n1, block_size, (n1 - n2 + m2) % n1, selected + n2, selected_count + n2,

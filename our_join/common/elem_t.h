@@ -17,7 +17,7 @@ typedef struct elem {
     int m0;
     int m1;
     int j_order;
-    char data[DATA_LENGTH];
+    char data[14];
     bool has_value;
     bool table_0;
 } elem_t;

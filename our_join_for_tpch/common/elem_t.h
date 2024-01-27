@@ -40,6 +40,6 @@ typedef struct ele2m {
     //unsigned char unused[ELEM_SIZE - ELEM_STRUCT_SIZE];
 } ele2m_t;
 
-//static_assert(sizeof(elem_t) == 32, "Element should be 32 bytes");
+//static_assert(sizeof(elem_t) == ELEM_SIZE, "Element should be 128 bytes");
 
 #endif /* common/elem_t.h */
