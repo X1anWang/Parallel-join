@@ -64,4 +64,6 @@ void join(Table &t, Table &t0, Table &t1) {
     #ifdef SUBTIME
     printf("Sorting second expanded table: %.2fs\n", TIME_VAL);
     #endif
+
+    printf("\nOutput length is:%d\n", output_size);
 }

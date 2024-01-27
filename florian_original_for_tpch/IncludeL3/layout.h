@@ -14,17 +14,17 @@ struct Table {
 
     struct TableEntry {
         // input data
-        long long join_attr;
-        //char data_attr[DATA_LENGTH];
+        int join_attr;
+        char data_attr[DATA_LENGTH];
 
         // auxillary data
-        long long block_height;
-        long long block_width;
-        long long index;
-        long long t1index;
+        int block_height;
+        int block_width;
+        int index;
+        int t1index;
 
         int table_id;
-        bool entry_type = EMPTY_ENTRY;
+        int entry_type = EMPTY_ENTRY;
     };
 
     TraceMem<TableEntry> data;

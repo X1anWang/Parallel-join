@@ -17,7 +17,7 @@ Table parseTables(char *buf, int& n1, int& n2) {
     
     Table t(n1 + n2);
 
-    printf("\n\nTable length: %d\n\n", n1);
+    printf("\n\nTable input length: %d\n\n", n1);
     
     for (int i = 0; i < n1 + n2; i++) {
         int j;//, d;
@@ -48,7 +48,7 @@ int my_len(char *data) {
 void toString(char *out_buf, Table t0, Table t1) {
     int m = t0.data.size;
     char *p = out_buf;
-    for (int i = 0; i < m; i++) {
+    for (int i = 0; i < 0; i++) {
         Table::TableEntry e0 = t0.data.read(i);
         Table::TableEntry e1 = t1.data.read(i);
         int d0 = my_len(e0.data_attr);

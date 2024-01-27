@@ -37,7 +37,7 @@
 # include <unistd.h>
 # include <pwd.h>
 # define MAX_PATH FILENAME_MAX
-# define MAX_BUF_SIZE 17179869184
+# define MAX_BUF_SIZE 12000000
 
 #include "sgx_urts.h"
 #include "App.h"
@@ -372,7 +372,7 @@ int SGX_CDECL main(int argc, char *argv[])
         process_input(global_eid, buf, MAX_BUF_SIZE);
         printf("Total runtime: %.2fs\n", (clock() - program_start) / (float)CLOCKS_PER_SEC);
 
-        fwrite(buf, 1, 100, oup);
+        //fwrite(buf, 1, 100, oup);
         free(buf);
     }
     fclose(oup);
