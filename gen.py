@@ -1,7 +1,7 @@
 import random
 
 #power_list = [19]
-power_list = [16, 18, 20, 22, 24] # with same length output & power law
+power_list = [26, 28, 30, 32, 34, 36, 38, 40] # with same length output & power law
 output_times = [] # with 2^16
 data_max = 1000
 temp = ""
