@@ -1,7 +1,7 @@
 
 for i in range(3):
-    f1 = open("u00000"+str(i)+"_0.txt", "r")
-    f2 = open("jan9_2_"+str(i+10)+".txt", "w")
+    f1 = open("/home/xian/Parallel-join/bdb_data/uservisits/1million/00000"+str(i)+"_0.txt", "r")
+    f2 = open("/home/xian/2_"+str(i)+".txt", "w")
 
     data = f1.readlines()
     f2.write(str((len(data) - 1))+"\n")

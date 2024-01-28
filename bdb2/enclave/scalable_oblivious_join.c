@@ -29,6 +29,11 @@ static int number_threads;
 int tree_node_idx_48[48] = {63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62};
 int tree_node_idx_6[6] = {7, 8, 9, 10, 5, 6};
 
+#ifdef COMMUNICATE
+volatile bool timer_start = true;
+volatile bool timer_end = true;
+#endif
+
 void reverse(char *s) {
     int i, j;
     char c;
@@ -108,6 +113,10 @@ struct args_op2 {
 };
 
 void aggregation_tree_op2(void *voidargs) {
+    #ifdef COMMUNICATE
+    timer_start = true;
+    timer_end = true;
+    #endif
     struct args_op2 *args = (struct args_op2*) voidargs;
     int index_thread_start = args->index_thread_start;
     int index_thread_end = args->index_thread_end;
@@ -124,7 +133,7 @@ void aggregation_tree_op2(void *voidargs) {
     sum[index_thread_start] = arr[index_thread_start].sum;
     for (int i = index_thread_start + 1; i < index_thread_end; i++) {
         condition = arr[i].key == arr[i - 1].key;
-        sum[i] = condition * sum[i - 1] + sum[i];
+        sum[i] = condition * sum[i - 1] + arr[i].sum;
     }
     for (int i = index_thread_end - 2; index_thread_start <= i; i--) {
         condition = arr[i].key == arr[i + 1].key;
@@ -138,6 +147,15 @@ void aggregation_tree_op2(void *voidargs) {
     ag_tree[cur_tree_node].sum_first = sum[index_thread_start];
     ag_tree[cur_tree_node].sum_last = sum[index_thread_end - 1];
     ag_tree[cur_tree_node].complete1 = true;
+
+    #ifdef COMMUNICATE
+    if(timer_start) {
+        timer_start = false;
+        printf("\nTimer start\n");
+        get_time(false);
+    }
+    #endif
+    
 
     int temp; // aggregation tree start
     while(cur_tree_node % 2 == 0 && 0 < cur_tree_node) {
@@ -182,6 +200,13 @@ void aggregation_tree_op2(void *voidargs) {
     while(!ag_tree[thread_order].complete2) {
         ;
     };
+    #ifdef COMMUNICATE
+    if(timer_end) {
+        timer_end = false;
+        get_time(true);
+        printf("\nTimer end\n");
+    }
+    #endif
 
     int key_first = arr[index_thread_start].key;
     int sum_previous = ag_tree[thread_order].sum_prefix;
@@ -227,7 +252,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
         sum[0] = arr[0].sum;
         for (int i = 1; i < length; i++) {
             condition = arr[i].key == arr[i - 1].key;
-            sum[i] = condition * sum[i - 1] + sum[i];
+            sum[i] = condition * sum[i - 1] + arr[i].sum;
         }
         for (int i = length - 2; 0 <= i; i--) {
             condition = arr[i].key == arr[i + 1].key;

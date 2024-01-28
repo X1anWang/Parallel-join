@@ -1,7 +1,7 @@
 
-for i in range(10):
-    f1 = open("00000"+str(i)+"_0.csv", "r")
-    f2 = open(str(i)+".txt", "w")
+for i in range(3):
+    f1 = open("/home/xian/Parallel-join/bdb_data/rankings/1million/00000"+str(i)+"_0.txt", "r")
+    f2 = open("/home/xian/1_"+str(i)+".txt", "w")
 
     data = f1.readlines()
     f2.write(str((len(data) - 1))+"\n")
