@@ -12,9 +12,10 @@
 // t: concatenated input table
 // t0, t1: aligned output tables
 void join(Table &t, Table &t0, Table &t1) {
+        printf("\n\nCheck 6\n\n");
     int n1 = t0.data.size, n2 = t1.data.size;
     int n = n1 + n2;
-
+    printf("\n\nCheck 7\n\n");
     #ifdef SUBTIME
     clock_t begin = clock();
     #endif

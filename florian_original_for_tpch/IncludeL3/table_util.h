@@ -32,6 +32,8 @@ Table parseTables(char *buf, int& n1, int& n2) {
         //entry.data_attr = d;
         t.data.write(i, entry);
     }
+
+    printf("\n\nCheck 1\n\n");
     
     return t;
 }

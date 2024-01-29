@@ -37,7 +37,7 @@
 # include <unistd.h>
 # include <pwd.h>
 # define MAX_PATH FILENAME_MAX
-# define MAX_BUF_SIZE 134217728
+# define MAX_BUF_SIZE 21474836480
 
 #include "sgx_urts.h"
 #include "App.h"

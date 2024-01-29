@@ -66,13 +66,16 @@ void process_input(char *buf, size_t len)
     // read input as one concatenated table
     int n1, n2;
     Table t = parseTables(buf, n1, n2);
+        printf("\n\nCheck 2\n\n");
     int n = n1 + n2;
-    
+        printf("\n\nCheck 3\n\n");
     init_time();
     Table t0(n1), t1(n2);
+        printf("\n\nCheck 4\n\n");
 
     join(t, t0, t1);
-    
+
+    printf("\n\nCheck 5\n\n");    
     // write output
     //toString(buf, t0, t1);
     
