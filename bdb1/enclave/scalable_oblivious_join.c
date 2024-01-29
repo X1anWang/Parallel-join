@@ -87,16 +87,83 @@ void scalable_oblivious_join_free() {
     //aligned_expand_free();
 }
 
+
+struct soj_scan_1_args {
+    int idx_st;
+    int idx_ed;
+    bool* control_bit;
+    elem_t *arr1;
+};
+
+
+void soj_scan_1(void *voidargs) {
+    struct soj_scan_1_args *args = (struct soj_scan_1_args*)voidargs;
+    int index_start = args->idx_st;
+    int index_end = args->idx_ed;
+    bool* cb1 = args->control_bit;
+    elem_t *arr1 = args->arr1;
+
+    for (int i = index_start; i < index_end; i++) {
+        cb1[i] = (88 < arr1[i].key);
+    }
+
+    return;
+}
+
+
 void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output_path){
     control_bit = calloc(length1, sizeof(*control_bit));
     (void)length2;
     (void)output_path;
+    int length_thread = length1 / number_threads;
+    int length_extra = length1 % number_threads;
+    struct soj_scan_1_args soj_scan_1_args_[number_threads];
+    int index_start_thread[number_threads + 1];
+    index_start_thread[0] = 0;
+    struct thread_work soj_scan_1_[number_threads - 1];
+
     printf("\n Start BDB operator - 1\n");
     init_time();
 
-    for (int i = 0; i < length1; i++) {
-        control_bit[i] = (88 < arr[i].key);
+
+
+
+
+
+
+
+
+    if (number_threads == 1) {
+
+        for (int i = 0; i < length1; i++) {
+            control_bit[i] = (88 < arr[i].key);
+        }  
     }
+    else {
+        // Step(3): Break table according to their tid (0 or 1) by parallel NlogN oblivious compaction
+        for (int i = 0; i < number_threads; i++) {
+            index_start_thread[i + 1] = index_start_thread[i] + length_thread + (i < length_extra);
+        
+            soj_scan_1_args_[i].idx_st = index_start_thread[i];
+            soj_scan_1_args_[i].idx_ed = index_start_thread[i + 1];
+            soj_scan_1_args_[i].control_bit = control_bit;
+            soj_scan_1_args_[i].arr1 = arr;
+
+            if (i < number_threads - 1) {
+                soj_scan_1_[i].type = THREAD_WORK_SINGLE;
+                soj_scan_1_[i].single.func = soj_scan_1;
+                soj_scan_1_[i].single.arg = soj_scan_1_args_ + i;
+                thread_work_push(soj_scan_1_ + i);
+            }
+        }
+        soj_scan_1(soj_scan_1_args_ + number_threads - 1);
+        for (int i = 0; i < number_threads; i++) {
+            if (i < number_threads - 1) {
+                thread_wait(soj_scan_1_ + i);
+            };
+        }
+    };
+
 
     oblivious_compact_elem(arr, control_bit, length1, 1, number_threads);
     get_time(true);
