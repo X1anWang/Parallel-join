@@ -104,10 +104,6 @@ int ecall_verify_sorted(void) {
 }
 
 void ecall_start_sort_work(void) {
-    /* Wait for master thread to choose sort. */
-    while (!algorithm_type) {
-    }
-
 
     /* Initialize sort. */
     if (bitonic_init()) {
@@ -273,13 +269,13 @@ int ecall_scalable_oblivious_join(char *input_path, size_t len) {
     //printf("\nlength 1 is:%d", length1);
     //printf("\nlength 2 is:%d", length2);
     for (int i = 0; i < length1; i++) {
-        strncpy(arr[i].data, strtok(NULL, " "), 105);
+        strncpy(arr[i].key, strtok(NULL, " "), 105);
         //arr[i].sum = atof(strtok(NULL, " "));
         strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);
         arr[i].table_0 = true;
     }
     for (int i = length1; i < length1 + length2; i++) {
-        strncpy(arr[i].data, strtok(NULL, " "), 105);
+        strncpy(arr[i].key, strtok(NULL, " "), 105);
         //arr[i].sum = atof(strtok(NULL, " "));
         strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);
         arr[i].table_0 = false;

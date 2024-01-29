@@ -267,10 +267,10 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
         }
     } else {
     printf("\n check 2. \n");
-        for (int i = 0; i < number_threads; i++) {
-            idx_start_thread[i + 1] = idx_start_thread[i] + length_thread + (i < length_extra);
+    for (int i = 0; i < number_threads; i++) {
+        idx_start_thread[i + 1] = idx_start_thread[i] + length_thread + (i < length_extra);
 
-            args_op2_[i].arr = arr;
+        args_op2_[i].arr = arr;
             args_op2_[i].arr_ = arr_;
             args_op2_[i].index_thread_start = idx_start_thread[i];
             args_op2_[i].index_thread_end = idx_start_thread[i + 1];
