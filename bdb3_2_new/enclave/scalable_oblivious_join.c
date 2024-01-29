@@ -22,7 +22,7 @@
 #include "enclave/parallel_t.h"
 #endif
 
-#define COMMUNICATE
+//#define COMMUNICATE
 
 #ifdef COMMUNICATE
 volatile bool timer_start = true;
@@ -254,7 +254,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
 
 
     bitonic_sort_(arr, true, 0, length, number_threads, true);
-
+    printf("\n check 1. \n");
     //printf("\n Sort completed");
 
     if (number_threads == 1) {
@@ -266,6 +266,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
             o_memcpy(arr_temp, arr + i, sizeof(*arr), condition);
         }
     } else {
+    printf("\n check 2. \n");
         for (int i = 0; i < number_threads; i++) {
             idx_start_thread[i + 1] = idx_start_thread[i] + length_thread + (i < length_extra);
 
@@ -287,16 +288,19 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
                 thread_work_push(&multi_thread_aggregation_tree_1[i]);
             }
     }
+    printf("\n check 3. \n");
     aggregation_tree_op2(&args_op2_[number_threads - 1]);
     for (int i = 0; i < number_threads - 1; i++) {
         thread_wait(&multi_thread_aggregation_tree_1[i]);
     }
+    printf("\n check 4. \n");
     }
     get_time(true);
-
+    printf("\n check 5. \n");
     free(ag_tree);
     free(arr_temp);
     free(arr_);
+    printf("\n check 6. \n");
 
     return;
 }
