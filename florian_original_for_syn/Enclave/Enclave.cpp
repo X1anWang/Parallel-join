@@ -74,7 +74,7 @@ void process_input(char *buf, size_t len)
     join(t, t0, t1);
     
     // write output
-    toString(buf, t0, t1);
+    //toString(buf, t0, t1);
     
     printf("Enclave end\n");
 }
