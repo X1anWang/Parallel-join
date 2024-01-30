@@ -277,12 +277,14 @@ int ecall_scalable_oblivious_join(char *input_path, size_t len) {
         strncpy(arr[i].key, strtok(NULL, " "), 105);
         strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);
         arr[i].table_0 = true;
+        arr[i].value = false;
         //printf("\n%dth table 0 read key:%d read data:%s", i, arr[i].key, arr[i].data);
     }
     for (int i = length1; i < length1 + length2; i++) {
         strncpy(arr[i].key, strtok(NULL, " "), 105);
         strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);
         arr[i].table_0 = false;
+        arr[i].value = false;
         //printf("\n%dth table 1 read key:%d read data:%s", i, arr[i].key, arr[i].data);
     }
 
