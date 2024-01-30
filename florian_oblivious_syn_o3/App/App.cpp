@@ -217,9 +217,7 @@ int initialize_enclave(void)
     /* reopen the file with write capablity */
     fp = freopen(token_path, "wb", fp);
     if (fp == NULL) return 0;
-    size_t write_num = fwrite(token, 1, sizeof(sgx_launch_token_t), fp);
-    if (write_num != sizeof(sgx_launch_token_t))
-        printf("Warning: Failed to save launch token to \"%s\".\n", token_path);
+    //size_t write_num = fwrite(token, 1, sizeof(sgx_launch_token_t), fp);
     fclose(fp);
     return 0;
 }
@@ -373,7 +371,7 @@ int SGX_CDECL main(int argc, char *argv[])
         process_input(global_eid, buf, MAX_BUF_SIZE);
         //printf("Total runtime: %.2fs\n", (clock() - program_start) / (float)CLOCKS_PER_SEC);
         
-        fwrite(buf, 1, strlen(buf), oup);
+        //fwrite(buf, 1, strlen(buf), oup);
 
         free(buf);
 

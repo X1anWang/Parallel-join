@@ -76,9 +76,8 @@ static void obliv_expand(TraceMem<Table::TableEntry> *traceMem) {
     for (int i = 0; i < csum; i++) {
         Table::TableEntry e = traceMem->read(i);
         bool cond = e.entry_type != EMPTY_ENTRY;
-        o_memswap(e);
-        e = cond ? e : last;
-        last = cond ? e : last;
+        o_memcpy(&e, &last, sizeof(last), !cond);
+        o_memcpy(&last, &e, sizeof(last), cond);
         dupl_off = ((e.entry_type != EMPTY_ENTRY) * 0) + ((!(e.entry_type != EMPTY_ENTRY)) * dupl_off);
         e.index += dupl_off;
         e.t1index = int(block_off / e.block_height) +

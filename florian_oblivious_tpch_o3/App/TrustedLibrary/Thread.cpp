@@ -30,82 +30,69 @@
  */
 
 
-#include <stdarg.h>
-#include <stdio.h>      /* vsnprintf */
-#include <string.h>
-#include <stdint.h>
+#include <thread>
+#include <stdio.h>
+using namespace std;
 
-#include <vector>
+#include "../App.h"
+#include "Enclave_u.h"
 
-#include "Enclave.h"
-#include "Enclave_t.h"  /* print_string */
+static size_t counter = 0;
 
-#include "join.h"
-#include "layout.h"
-#include "table_util.h"
-
-#include "bitonic_sort.h"
-/* 
- * printf: 
- *   Invokes OCALL to display the enclave buffer to the terminal.
- */
-void printf(const char *fmt, ...)
+void increase_counter(void)
 {
-    char buf[BUFSIZ] = {'\0'};
-    va_list ap;
-    va_start(ap, fmt);
-    vsnprintf(buf, BUFSIZ, fmt, ap);
-    va_end(ap);
-    ocall_print_string(buf);
+    size_t cnr = 0;
+    sgx_status_t ret = SGX_ERROR_UNEXPECTED;
+    ret = ecall_increase_counter(global_eid, &cnr);
+    if (cnr != 0) counter = cnr; 
+    if (ret != SGX_SUCCESS)
+        abort();
 }
 
-void process_input(char *buf, size_t len)
-{   
-    printf("Enclave begin\n");
-    
-    // read input as one concatenated table
-    int n1, n2;
-    Table t = parseTables(buf, n1, n2);
-    int n = n1 + n2;
-    
-    init_time();
-    //init_time3();
-    Table t0(n1), t1(n2);
-
-    join(t, t0, t1);
-    
-    // write output
-    toString(buf, t0, t1);
-    
-    //time3_print();
-    printf("Enclave end\n");
+void data_producer(void)
+{
+    sgx_status_t ret = SGX_ERROR_UNEXPECTED;
+    ret = ecall_producer(global_eid);
+    if (ret != SGX_SUCCESS)
+        abort();
 }
 
-void our_sort_test(char *buf, size_t len){
-    printf("Bitonic sort start\n");
-    elem_t *arr;
+void data_consumer(void)
+{
+    sgx_status_t ret = SGX_ERROR_UNEXPECTED;
+    ret = ecall_consumer(global_eid);
+    if (ret != SGX_SUCCESS)
+        abort();
+}
 
-    // parse table
-    int n1, n2;
-    char *cp;
-    cp = strtok(buf, " ");
-    n1 = atoi(cp);
-    cp = strtok(NULL, "\n");
-    n2 = atoi(cp);
-    arr = (elem_t*)calloc(n1 + n2, sizeof(*arr));
-    for (int i = 0; i < n1 + n2; i++) {
-        int j, d;
-        j = atoi(strtok(NULL, " "));
-        d = atoi(strtok(NULL, "\n"));
-        arr[i].key = j;
-        arr[i].data[0] = d;
-    }
+/* ecall_thread_functions:
+ *   Invokes thread functions including mutex, condition variable, etc.
+ */
+void ecall_thread_functions(void)
+{
+    thread adder1(increase_counter);
+    thread adder2(increase_counter);
+    thread adder3(increase_counter);
+    thread adder4(increase_counter);
 
-    // sort table
-    get_time(0);
-    bitonic_sort(arr, n1+n2);
-    //time3_print();
-    get_time(1);
+    adder1.join();
+    adder2.join();
+    adder3.join();
+    adder4.join();
 
-    printf("Bitonic sort end\n");
+    assert(counter == 4*LOOPS_PER_THREAD);
+
+    printf("Info: executing thread synchronization, please wait...  \n");
+    /* condition variable */
+    thread consumer1(data_consumer);
+    thread producer0(data_producer);
+    thread consumer2(data_consumer);
+    thread consumer3(data_consumer);
+    thread consumer4(data_consumer);
+    
+    consumer1.join();
+    consumer2.join();
+    consumer3.join();
+    consumer4.join();
+    producer0.join();
 }
