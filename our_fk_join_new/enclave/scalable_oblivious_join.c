@@ -16,6 +16,7 @@
 #include "enclave/bitonic.h"
 #include "enclave/parallel_enc.h"
 #include "enclave/threading.h"
+#include "enclave/oblivious_compact.h"
 
 #ifndef DISTRIBUTED_SGX_SORT_HOSTONLY
 #include <openenclave/enclave.h>
@@ -28,6 +29,9 @@
 volatile bool timer_start = true;
 volatile bool timer_end = true;
 #endif
+
+bool* control_bit;
+bool* control_bit_;
 
 static long long number_threads;
 
@@ -211,6 +215,8 @@ void aggregation_tree_op2(void *voidargs) {
     for (long long i = index_thread_start; i < index_thread_end; i++) {
         condition = !arr[i].table_0 && !arr[i].table_0;
         o_memcpy(arr_ + i, arr_temp, sizeof(*arr_temp), condition);
+        control_bit[i] = !arr[i].table_0;
+        control_bit_[i] = arr_[i].table_0;
     }
     //printf("\nCheck 6, from thread %d\n", thread_order);
 
@@ -240,6 +246,8 @@ void scalable_oblivious_join(elem_t *arr, long long length1, long long length2, 
     ag_tree[0].table0_prefix = 0;
     ag_tree[0].complete2 = true;
     elem_t* arr_temp = calloc(1, sizeof(*arr_temp));
+    control_bit = calloc(length, sizeof(*control_bit));
+    control_bit_ = calloc(length, sizeof(*control_bit_));
     printf("\n Our foreign key join - start. \n");
     printf("\n Number of threads: %lld \n", number_threads);
     init_time();
@@ -249,6 +257,7 @@ void scalable_oblivious_join(elem_t *arr, long long length1, long long length2, 
     //printf("\n check 1. \n");
     //printf("\n Sort completed");
 
+    get_time(true);
     if (number_threads == 1) {
         condition = arr[0].table_0;
         o_memcpy(arr_temp, arr, sizeof(*arr), condition);
@@ -286,10 +295,15 @@ void scalable_oblivious_join(elem_t *arr, long long length1, long long length2, 
     }
     }
     get_time(true);
+    oblivious_compact_elem(arr, control_bit, length, 1, number_threads);
+    oblivious_compact_elem(arr_, control_bit_, length, 1, number_threads);
+    get_time(true);
 
     free(ag_tree);
     free(arr_temp);
     free(arr_);
+    free(control_bit);
+    free(control_bit_);
     
     return;
 }

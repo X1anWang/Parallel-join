@@ -36,7 +36,7 @@ enclave/scalable_oblivious_join.o: enclave/scalable_oblivious_join.c \
  /opt/openenclave/share/pkgconfig/../../include/openenclave/3rdparty/libc/pthread.h \
  /opt/openenclave/share/pkgconfig/../../include/openenclave/3rdparty/libc/sched.h \
  enclave/bitonic.h common/defs.h enclave/parallel_enc.h \
- enclave/threading.h enclave/synch.h \
+ enclave/threading.h enclave/synch.h enclave/oblivious_compact.h \
  /opt/openenclave/share/pkgconfig/../../include/openenclave/enclave.h \
  /opt/openenclave/share/pkgconfig/../../include/openenclave/bits/asym_keys.h \
  /opt/openenclave/share/pkgconfig/../../include/openenclave/bits/defs.h \
