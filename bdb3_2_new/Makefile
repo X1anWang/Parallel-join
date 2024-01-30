@@ -27,6 +27,7 @@ ENCLAVE_OBJS = \
 	$(ENCLAVE_DIR)/synch.o \
 	$(ENCLAVE_DIR)/threading.o \
 	$(ENCLAVE_DIR)/window.o \
+	$(ENCLAVE_DIR)/oblivious_compact.o \
 	$(ENCLAVE_DIR)/scalable_oblivious_join.o
 ENCLAVE_DEPS = $(ENCLAVE_OBJS:.o=.d)
 ENCLAVE_KEY = $(ENCLAVE_DIR)/$(APP_NAME).pem

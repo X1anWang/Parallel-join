@@ -238,6 +238,7 @@ void scalable_oblivious_join(elem_t *arr, long long length1, long long length2, 
         arr_[i].table_0 = false;
     }
     bool condition;
+    bool condition2;
     long long length_thread = length / number_threads;
     long long length_extra = length % number_threads;
     struct args_op2 args_op2_[number_threads];
@@ -265,7 +266,8 @@ void scalable_oblivious_join(elem_t *arr, long long length1, long long length2, 
         o_memcpy(arr_temp, arr, sizeof(*arr), condition);
         for (long long i = 1; i < length; i++) {
             condition = arr[i].table_0;
-            o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), !condition);
+            condition2 = arr[i].key == arr_temp[i].key;
+            o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), (!condition)&& condition2);
             o_memcpy(arr_temp, arr + i, sizeof(*arr), condition);
         }
     } else {

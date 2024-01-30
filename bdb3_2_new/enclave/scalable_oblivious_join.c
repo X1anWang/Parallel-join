@@ -16,6 +16,7 @@
 #include "enclave/bitonic.h"
 #include "enclave/parallel_enc.h"
 #include "enclave/threading.h"
+#include "enclave/oblivious_compact.h"
 
 #ifndef DISTRIBUTED_SGX_SORT_HOSTONLY
 #include <openenclave/enclave.h>
@@ -28,6 +29,9 @@
 volatile bool timer_start = true;
 volatile bool timer_end = true;
 #endif
+
+bool* control_bit;
+bool* control_bit_;
 
 static int number_threads;
 
@@ -133,6 +137,7 @@ void aggregation_tree_op2(void *voidargs) {
     int thread_order = args->thread_order;
     int cur_tree_node = thread_order;
     bool condition;
+    bool condition2;
 
 
 
@@ -143,7 +148,8 @@ void aggregation_tree_op2(void *voidargs) {
     o_memcpy(arr_temp, arr + index_thread_start, sizeof(*arr), condition);
     for (int i = index_thread_start + 1; i < index_thread_end; i++) {
         condition = arr[i].table_0;
-        o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), !condition);
+        condition2 = arr[i].key == arr_temp[0].key;
+        o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), ((!condition)&&condition2));
         o_memcpy(arr_temp, arr + i, sizeof(*arr), condition);
     }
 
@@ -218,7 +224,10 @@ void aggregation_tree_op2(void *voidargs) {
 
     for (int i = index_thread_start; i < index_thread_end; i++) {
         condition = !arr[i].table_0 && !arr[i].table_0;
-        o_memcpy(arr_ + i, arr_temp, sizeof(*arr_temp), condition);
+        condition2 = arr[i].key == arr_temp[0].key;
+        o_memcpy(arr_ + i, arr_temp, sizeof(*arr_temp), condition && condition2);
+        control_bit[i] = !arr[i].table_0 && arr_[i].table_0;
+        control_bit_[i] = !arr[i].table_0 && arr_[i].table_0;
     }
     //printf("\nCheck 6, from thread %d\n", thread_order);
 
@@ -238,6 +247,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
         arr_[i].table_0 = false;
     }
     bool condition;
+    bool condition2;
     int length_thread = length / number_threads;
     int length_extra = length % number_threads;
     struct args_op2 args_op2_[number_threads];
@@ -248,21 +258,25 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     ag_tree[0].table0_prefix = 0;
     ag_tree[0].complete2 = true;
     elem_t* arr_temp = calloc(1, sizeof(*arr_temp));
+    control_bit = calloc(length, sizeof(*control_bit));
+    control_bit_ = calloc(length, sizeof(*control_bit_));
     printf("\n Our foreign key join - start. \n");
     printf("\n Number of threads: %d \n", number_threads);
     init_time();
 
 
     bitonic_sort_(arr, true, 0, length, number_threads, true);
-    printf("\n check 1. \n");
+    //printf("\n check 1. \n");
     //printf("\n Sort completed");
 
+    get_time(true);
     if (number_threads == 1) {
         condition = arr[0].table_0;
         o_memcpy(arr_temp, arr, sizeof(*arr), condition);
         for (int i = 1; i < length; i++) {
             condition = arr[i].table_0;
-            o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), !condition);
+            condition2 = arr[i].key == arr_temp[i].key;
+            o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), (!condition)&& condition2);
             o_memcpy(arr_temp, arr + i, sizeof(*arr), condition);
         }
     } else {
@@ -288,19 +302,21 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
                 thread_work_push(&multi_thread_aggregation_tree_1[i]);
             }
     }
-    printf("\n check 3. \n");
     aggregation_tree_op2(&args_op2_[number_threads - 1]);
     for (int i = 0; i < number_threads - 1; i++) {
         thread_wait(&multi_thread_aggregation_tree_1[i]);
     }
-    printf("\n check 4. \n");
     }
     get_time(true);
-    printf("\n check 5. \n");
+    oblivious_compact_elem(arr, control_bit, length, 1, number_threads);
+    oblivious_compact_elem(arr_, control_bit_, length, 1, number_threads);
+    get_time(true);
+
     free(ag_tree);
     free(arr_temp);
     free(arr_);
-    printf("\n check 6. \n");
-
+    free(control_bit);
+    free(control_bit_);
+    
     return;
 }
