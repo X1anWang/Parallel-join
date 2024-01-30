@@ -27,11 +27,10 @@ Table parseTables(char *buf, int& n1, int& n2) {
     int sum = 0;
     int num1 = 0;
     int num2 = 0;
-    for (int ii = 0; ii < n1 && sum < n1; ii++) {
-        num = (n1 - sum) < int(c * 1 / (ii * ii)) ? (n1 - sum) : int(c * 1 / (ii * ii));
+    for (int ii = 1; (ii <= n1) && (sum < n1); ii++) {
+        num = (n1 - sum) < int(c / (ii * ii)) ? (n1 - sum) : int(c / (ii * ii));
         num1 = (num % 2 == 0) ? 2 : 1;
         num2 = num / num1;
-        
         for(int u = 0; u < num1; u++) {
             Table::TableEntry entry = t.data.read(index_1);
             entry.entry_type = REG_ENTRY;
@@ -50,6 +49,7 @@ Table parseTables(char *buf, int& n1, int& n2) {
         sum += num;
     }
 
+
     for (; index_1 < n1; ) {
         Table::TableEntry entry = t.data.read(index_1);
         entry.entry_type = REG_ENTRY;
@@ -65,7 +65,6 @@ Table parseTables(char *buf, int& n1, int& n2) {
         entry.join_attr = total + 2;
         t.data.write(index_2++, entry);
     }
-    
     
     
     return t;

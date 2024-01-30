@@ -25,6 +25,7 @@ void join(Table &t, Table &t0, Table &t1) {
 
     // fill in block heights and widths after initial sort & get output_size
     int output_size = write_block_sizes(n, t);
+    printf("\nOutput size is:%d\n", output_size);
     get_time(1);
     
     // resort lexicographically by (table_id, join_attr, data_attr)
