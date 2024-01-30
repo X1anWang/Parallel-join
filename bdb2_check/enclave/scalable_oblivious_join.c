@@ -198,25 +198,6 @@ void aggregation_tree_op2(void *voidargs) {
     while(!ag_tree[thread_order].complete2) {
         ;
     };
-    #ifdef COMMUNICATE
-    if(timer_end) {
-        timer_end = false;
-        get_time(true);
-        printf("\nTimer end\n");
-    }
-    #endif
-
-    int key_first = arr[index_thread_start].key;
-    int sum_previous = ag_tree[thread_order].sum_prefix;
-    int key_last = arr[index_thread_end - 1].key;
-    int sum_last = ag_tree[thread_order].sum_suffix;
-    //printf("\nCheck 5, from thread %d\n", thread_order);
-    for (int i = index_thread_start; i < index_thread_end; i++) {
-        condition = (arr[i].key == key_first);
-        condition1 = (arr[i].key == key_last);
-        sum[i] += condition * sum_previous + condition1 * sum_last;
-    }
-    //printf("\nCheck 6, from thread %d\n", thread_order);
 
     return;
 
@@ -225,7 +206,6 @@ void aggregation_tree_op2(void *voidargs) {
 void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output_path){
     #ifdef COMMUNICATE
     timer_start = true;
-    timer_end = true;
     #endif
     int length = length1;
     (void)length2;
@@ -286,8 +266,8 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     for (int i = 0; i < number_threads - 1; i++) {
         thread_wait(&multi_thread_aggregation_tree_1[i]);
     }
-    }
     get_time(true);
+    }
 
     free(sum);
     free(ag_tree);

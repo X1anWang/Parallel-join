@@ -26,7 +26,6 @@
 
 #ifdef COMMUNICATE
 volatile bool timer_start = true;
-volatile bool timer_end = true;
 #endif
 
 static int number_threads;
@@ -202,26 +201,6 @@ void aggregation_tree_op2(void *voidargs) {
     while(!ag_tree[thread_order].complete2) {
         ;
     };
-
-    #ifdef COMMUNICATE
-    if(timer_end) {
-        timer_end = false;
-        get_time(true);
-        printf("\nTimer end\n");
-    }
-    #endif
-
-    for (int u = 0; u < 105; u++) {
-        arr_temp[0].key[u] = ag_tree[thread_order].key_prefix[u];
-    }
-    arr_temp[0].table_0 = ag_tree[thread_order].table0_prefix;
-
-    for (int i = index_thread_start; i < index_thread_end; i++) {
-        condition = !arr[i].table_0 && !arr[i].table_0;
-        o_memcpy(arr_ + i, arr_temp, sizeof(*arr_temp), condition);
-    }
-    //printf("\nCheck 6, from thread %d\n", thread_order);
-
     free(arr_temp);
     return;
 }
@@ -229,7 +208,6 @@ void aggregation_tree_op2(void *voidargs) {
 void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output_path){
     #ifdef COMMUNICATE
     timer_start = true;
-    timer_end = true;
     #endif
     int length = length1 + length2;
     (void)output_path;
@@ -254,7 +232,6 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
 
 
     bitonic_sort_(arr, true, 0, length, number_threads, true);
-    printf("\n check 1. \n");
     //printf("\n Sort completed");
 
     if (number_threads == 1) {
@@ -266,7 +243,6 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
             o_memcpy(arr_temp, arr + i, sizeof(*arr), condition);
         }
     } else {
-    printf("\n check 2. \n");
     for (int i = 0; i < number_threads; i++) {
         idx_start_thread[i + 1] = idx_start_thread[i] + length_thread + (i < length_extra);
 
@@ -288,19 +264,15 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
                 thread_work_push(&multi_thread_aggregation_tree_1[i]);
             }
     }
-    printf("\n check 3. \n");
     aggregation_tree_op2(&args_op2_[number_threads - 1]);
     for (int i = 0; i < number_threads - 1; i++) {
         thread_wait(&multi_thread_aggregation_tree_1[i]);
     }
-    printf("\n check 4. \n");
     }
     get_time(true);
-    printf("\n check 5. \n");
     free(ag_tree);
     free(arr_temp);
     free(arr_);
-    printf("\n check 6. \n");
 
     return;
 }
