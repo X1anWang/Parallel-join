@@ -18,7 +18,7 @@
 //#define OE_DEBUG
 //#define OE_SIMULATION
 
-#define MAX_BUF_SIZE 2147483648
+#define MAX_BUF_SIZE 1073741824
 
 static int world_rank;
 static int world_size;
