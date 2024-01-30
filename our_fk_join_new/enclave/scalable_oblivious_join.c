@@ -137,7 +137,7 @@ void aggregation_tree_op2(void *voidargs) {
     long long thread_order = args->thread_order;
     long long cur_tree_node = thread_order;
     bool condition;
-
+    bool condition2;
 
 
 
@@ -147,7 +147,8 @@ void aggregation_tree_op2(void *voidargs) {
     o_memcpy(arr_temp, arr + index_thread_start, sizeof(*arr), condition);
     for (long long i = index_thread_start + 1; i < index_thread_end; i++) {
         condition = arr[i].table_0;
-        o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), !condition);
+        condition2 = arr[i].key == arr_temp[0].key;
+        o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), ((!condition)&&condition2));
         o_memcpy(arr_temp, arr + i, sizeof(*arr), condition);
     }
 
@@ -213,10 +214,11 @@ void aggregation_tree_op2(void *voidargs) {
     arr_temp[0].table_0 = ag_tree[thread_order].table0_prefix;
 
     for (long long i = index_thread_start; i < index_thread_end; i++) {
-        condition = !arr[i].table_0 && !arr[i].table_0;
-        o_memcpy(arr_ + i, arr_temp, sizeof(*arr_temp), condition);
-        control_bit[i] = !arr[i].table_0;
-        control_bit_[i] = arr_[i].table_0;
+        condition = !arr[i].table_0 && !arr_[i].table_0;
+        condition2 = arr[i].key == arr_temp[0].key;
+        o_memcpy(arr_ + i, arr_temp, sizeof(*arr_temp), condition && condition2);
+        control_bit[i] = !arr[i].table_0 && arr_[i].table_0;
+        control_bit_[i] = !arr[i].table_0 && arr_[i].table_0;
     }
     //printf("\nCheck 6, from thread %d\n", thread_order);
 

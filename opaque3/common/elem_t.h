@@ -15,7 +15,7 @@ typedef int ojoin_int_type;
 
 typedef struct elem {
     char key[105];
-    bool unused;
+    bool value;
     bool has_value;
     bool table_0;
     int m0;

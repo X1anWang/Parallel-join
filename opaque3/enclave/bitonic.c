@@ -19,6 +19,7 @@
 static size_t total_length;
 static thread_local elem_t *buffer;
 static bool dimension2D;
+static bool sort_dummy;
 static elem_t *arr;
 
 bool compare2D(elem_t* a, elem_t* b) {
@@ -29,10 +30,12 @@ bool compare2D(elem_t* a, elem_t* b) {
 
 
 bool compare2D_(int a, int b) {
+    if (sort_dummy) return arr[a].value > arr[b].value;
     bool c;
     c = (o_strcmp(arr[a].key, arr[b].key) == -1) || (dimension2D && (o_strcmp(arr[a].key, arr[b].key) == 0) && (arr[a].table_0 > arr[b].table_0));
     return c;
 }
+
 
 int bitonic_init(void) {
     /* Allocate buffers. */
@@ -679,9 +682,10 @@ void bitonic_sort_new(void *voidargs) {
     bitonic_merge(&args_merge);
 }
 
-void bitonic_sort_(elem_t *arr_, bool ascend, int lo, int hi, int number_threads, bool D2enable) {
+void bitonic_sort_(elem_t *arr_, bool ascend, int lo, int hi, int number_threads, bool D2enable, bool dum) {
     arr = arr_;
     dimension2D = D2enable;
+    sort_dummy = dum;
     struct bitonic_merge_args_1 args = {
         .ascend = ascend,
         .lo = lo,

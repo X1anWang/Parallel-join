@@ -204,6 +204,7 @@ void aggregation_tree_op2(void *voidargs) {
     elem_t* arr = args->arr;
     elem_t* arr_ = args->arr_;
     bool condition;
+    bool condition2;
     elem_t *arr_temp = calloc(1, sizeof(*arr_temp));
     arr_temp[0].table_0 = false;
 
@@ -211,7 +212,8 @@ void aggregation_tree_op2(void *voidargs) {
     o_memcpy(arr_temp, arr + index_thread_start, sizeof(*arr), condition);
     for (int i = index_thread_start + 1; i < index_thread_end; i++) {
         condition = arr[i].table_0;
-        o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), !condition);
+        condition2 = arr[i].key == arr_temp[0].key;
+        o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), ((!condition)&&condition2));
         o_memcpy(arr_temp, arr + i, sizeof(*arr), condition);
     }
 
@@ -223,15 +225,19 @@ void aggregation_tree_op3(void *voidargs) {
     struct args_op2 *args = (struct args_op2*) voidargs;
     int index_thread_start = args->index_thread_start;
     int index_thread_end = args->index_thread_end;
+    elem_t* arr2 = args->arr;
     elem_t* arr_ = args->arr_;
     bool condition;
+    bool condition2;
     elem_t *arr_temp = calloc(1, sizeof(*arr_temp));
     
     o_memcpy(arr_temp, arr_ + index_thread_start, sizeof(*arr_), true);
     for (int i = index_thread_start + 1; i < index_thread_end; i++) {
-        condition = arr_[i].table_0;
-        o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), !condition);
-        //o_memcpy(arr_temp, arr, sizeof(*arr), condition);
+        condition = !arr2[i].table_0 && !arr_[i].table_0;
+        condition2 = arr2[i].key == arr_temp[0].key;
+        o_memcpy(arr_ + i, arr_temp, sizeof(*arr_temp), (condition && condition2));
+        arr2[i].value = !arr2[i].table_0 && arr_[i].table_0;
+        arr_[i].value = !arr2[i].table_0 && arr_[i].table_0;
     }
 
     free(arr_temp);
@@ -270,7 +276,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     init_time();
 
     // Step(1): 1st sort
-    bitonic_sort_(arr, true, 0, length, number_threads, true);
+    bitonic_sort_(arr, true, 0, length, number_threads, true, false);
     get_time(true);
 
 
@@ -323,8 +329,9 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     get_time(true);
     }
 
-
-
+    bitonic_sort_(arr, true, 0, length, number_threads, true, true);
+    bitonic_sort_(arr_, true, 0, length, number_threads, true, true);
+    get_time(true);
 
 
 
