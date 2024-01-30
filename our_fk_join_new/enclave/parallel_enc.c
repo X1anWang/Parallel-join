@@ -269,13 +269,13 @@ int ecall_scalable_oblivious_join(char *input_path, size_t len) {
     //printf("\nlength 1 is:%d", length1);
     //printf("\nlength 2 is:%d", length2);
     for (long long i = 0; i < length1; i++) {
-        arr[i].key = atof(strtok(NULL, " "));
+        arr[i].key = atoi(strtok(NULL, " "));
         strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);
         arr[i].table_0 = true;
     }
     for (long long i = length1; i < length1 + length2; i++) {
         //strncpy(arr[i].key, strtok(NULL, " "), 105);
-        arr[i].key = atof(strtok(NULL, " "));
+        arr[i].key = atoi(strtok(NULL, " "));
         strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);
         arr[i].table_0 = false;
     }
