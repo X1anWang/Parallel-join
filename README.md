@@ -33,7 +33,7 @@ chmod +x ./scripts/install-dependencies.sh
 
 ## Datasets
 
-To test with datasets synthesized in the way described in [VLDB'20](https://dl.acm.org/doi/10.14778/3407790.3407814), run the following commands for 1x1, 1xn and a power-law distribution input file with total element number 2<sup>16</sup> to 2<sup>30</sup>.
+To test with datasets synthesized in the way described in [VLDB'20](https://dl.acm.org/doi/10.14778/3407790.3407814), we run the following commands to generate 1x1, 1xn and a power-law distribution input file with total element number 2<sup>16</sup> to 2<sup>30</sup>.
 
 ```bash
 python3 /scripts/generate_join_input_1.py
