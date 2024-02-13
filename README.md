@@ -83,7 +83,7 @@ make
 ## BDB Query 3: Join
 
 ```bash
-cd operator_3_test
+cd operator_3
 make clean
 make
 ./host/parallel ./enclave/parallel_enc.signed number_thread input_file
