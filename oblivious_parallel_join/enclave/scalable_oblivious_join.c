@@ -381,7 +381,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     // Write out
     char *char_current = output_path;
     //printf("\nresult length is:%d\n",length_result);
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < length_result; i++) {
         int key1 = arr1[i].key;
         int key2 = arr2[i].key;
         //printf("\n Write out key1:%d key2:%d data1:%s data2:%s", key1, key2, arr1[i].data, arr2[i].data);

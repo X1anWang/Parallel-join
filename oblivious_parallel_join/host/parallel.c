@@ -113,7 +113,7 @@ fclose(input_file);
 
     printf("\nExit enclave\n");
 
-    //fwrite(buf, 1, strlen(buf), output_file);
+    fwrite(buf, 1, strlen(buf), output_file);
     fclose(output_file);
     free(buf);
     MPI_Barrier(MPI_COMM_WORLD);
