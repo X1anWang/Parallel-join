@@ -13,6 +13,7 @@
 
 #ifndef DISTRIBUTED_SGX_SORT_HOSTONLY
 #include <openenclave/enclave.h>
+#include <openenclave/advanced/mallinfo.h>
 #include "enclave/parallel_t.h"
 #endif
 
@@ -369,6 +370,12 @@ int ecall_scalable_oblivious_join(char *input_path, size_t len) {
 
     printf("\nReturned");
     free(arr);
+
+    oe_mallinfo_t info;
+    oe_result_t rc = oe_allocator_mallinfo(&info);
+    printf("\nHeap size current is: %ld\n", info.current_allocated_heap_size);
+    printf("\nHeap size peak is: %ld\n", info.peak_allocated_heap_size);
+    (void)rc;
 
     return 0;
 }
