@@ -28,6 +28,8 @@
 #include "enclave/parallel_t.h"
 #endif
 
+#define MAX_OUTPUT_LENGTH 536870912
+
 static bool condition;
 
 
@@ -200,6 +202,10 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     int length_result;
     index_target = calloc(length1, sizeof(*index_target));
     index_target2 = calloc(length2, sizeof(*index_target2));
+    elem_t *arr1 = calloc(MAX_OUTPUT_LENGTH, sizeof(*arr1));
+    elem_t *arr2 = calloc(MAX_OUTPUT_LENGTH, sizeof(*arr2));
+    int *index_target_ = calloc(MAX_OUTPUT_LENGTH, sizeof(*index_target_));
+    int *index_target2_ = calloc(MAX_OUTPUT_LENGTH, sizeof(*index_target2_));
     bitonic_init();
     init_time2();
     init_time();
@@ -293,10 +299,6 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     */
     length_result = index_target[length1 - 1] + arr[length1 - 1].table_0 * arr[length1 - 1].m1;
     //printf("\nStep 4 - 1\n");
-    elem_t *arr1 = calloc(length_result, sizeof(*arr1));
-    elem_t *arr2 = calloc(length_result, sizeof(*arr2));
-    int *index_target_ = calloc(length_result, sizeof(*index_target_));
-    int *index_target2_ = calloc(length_result, sizeof(*index_target2_));
     length_thread = length_result / number_threads;
     length_extra = length_result % number_threads;
     //printf("\nStep 4 - 2\n");
@@ -381,7 +383,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     // Write out
     char *char_current = output_path;
     //printf("\nresult length is:%d\n",length_result);
-    for (int i = 0; i < length_result; i++) {
+    for (int i = 0; i < 0; i++) {
         int key1 = arr1[i].key;
         int key2 = arr2[i].key;
         //printf("\n Write out key1:%d key2:%d data1:%s data2:%s", key1, key2, arr1[i].data, arr2[i].data);

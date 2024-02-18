@@ -350,16 +350,14 @@ int ecall_scalable_oblivious_join(char *input_path, size_t len) {
     //printf("\nlength 1 is:%d", length1);
     //printf("\nlength 2 is:%d", length2);
     for (int i = 0; i < length1; i++) {
-        arr[i].key = atoi(strtok(NULL, " "));
-        strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);
+        arr[i].key = 8;
+        //strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);
         arr[i].table_0 = true;
-        //printf("\n%dth table 0 read key:%d read data:%s", i, arr[i].key, arr[i].data);
     }
     for (int i = length1; i < length1 + length2; i++) {
-        arr[i].key = atoi(strtok(NULL, " "));
-        strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);
+        arr[i].key = i - length1;
+        //strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);
         arr[i].table_0 = false;
-        //printf("\n%dth table 1 read key:%d read data:%s", i, arr[i].key, arr[i].data);
     }
 
 
