@@ -1,0 +1,47 @@
+
+The output file path is:/dev/input_2power_of_24_output.txt
+Entered enclave
+Bitonoic sort based parallel join start...
+Input length: 8388608 and 8388608
+ key and value size is: 16 (Bytes)
+Number of threads: 1
+10.783167
+0.109477
+0.212625
+1.221411
+0.049760
+0.952938
+0.979708
+0.041608
+0.090411
+5.459467
+
+Join completed, total time:19.900622
+
+Output length is: 8388608
+Returned
+Exit enclave
+
+The output file path is:/dev/input_2power_of_24_output.txt
+Entered enclave
+ Size of block is:24
+Bitonoic sort based parallel join start...
+Input length: 8388608 and 8388608
+ key and value size is: 8 (Bytes)
+Number of threads: 1
+24.210164
+0.140368
+0.233005
+2.818975
+0.072321
+0.836422
+1.820304
+0.104761
+0.109158
+11.418334
+
+Join completed, total time:41.763870
+
+Output length is: 8388608
+Returned
+Exit enclave
