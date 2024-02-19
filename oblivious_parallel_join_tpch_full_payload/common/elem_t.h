@@ -6,9 +6,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define ELEM_SIZE 128
+#define ELEM_SIZE 256
 #define ELEM_STRUCT_SIZE 19
-#define DATA_LENGTH 4
+#define DATA_LENGTH 238
 
 typedef int ojoin_int_type;
 
@@ -26,9 +26,9 @@ typedef struct elem {
     int m0;
     int m1;
     int j_order;
-    char data[14];
     bool has_value;
     bool table_0;
+    char data[238];
 } elem_t;
 
 typedef struct ele2m {
@@ -49,6 +49,6 @@ typedef struct ele2m {
     //unsigned char unused[ELEM_SIZE - ELEM_STRUCT_SIZE];
 } ele2m_t;
 
-//static_assert(sizeof(elem_t) == ELEM_SIZE, "Element should be 128 bytes");
+static_assert(sizeof(elem_t) == ELEM_SIZE, "Element should be 256 bytes");
 
 #endif /* common/elem_t.h */
