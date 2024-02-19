@@ -28,7 +28,9 @@
 #include "enclave/parallel_t.h"
 #endif
 
-#define MAX_OUTPUT_LENGTH 268435456
+#define MAX_OUTPUT_LENGTH 33554432
+//#define MAX_OUTPUT_LENGTH 2147483648
+
 
 static bool condition;
 
