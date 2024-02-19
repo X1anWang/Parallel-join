@@ -28,7 +28,7 @@
 #include "enclave/parallel_t.h"
 #endif
 
-#define MAX_OUTPUT_LENGTH 62500000
+#define MAX_OUTPUT_LENGTH 33554432
 
 static bool condition;
 
@@ -204,6 +204,10 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     index_target2 = calloc(length2, sizeof(*index_target2));
     elem_t *arr1 = calloc(MAX_OUTPUT_LENGTH, sizeof(*arr1));
     elem_t *arr2 = calloc(MAX_OUTPUT_LENGTH, sizeof(*arr2));
+    for (int i = 0; i < MAX_OUTPUT_LENGTH; i++) {
+        arr1[i].key = 1;
+        arr2[i].key = 2;
+    }
     int *index_target_ = calloc(MAX_OUTPUT_LENGTH, sizeof(*index_target_));
     int *index_target2_ = calloc(MAX_OUTPUT_LENGTH, sizeof(*index_target2_));
     bitonic_init();
