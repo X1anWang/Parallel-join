@@ -14,10 +14,11 @@
 typedef int ojoin_int_type;
 
 typedef struct elem {
-    char key[105];
+    //char key[105];
+    uint64_t key;
     bool table_0;
-    char unused[6];
-    char data[16];
+    //char unused[103];
+    char data[119];
 } elem_t;
 
 typedef struct ele2m {
