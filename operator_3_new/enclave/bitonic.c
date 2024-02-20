@@ -23,7 +23,7 @@ static elem_t *arr;
 
 bool compare2D(elem_t* a, elem_t* b) {
     bool c;
-    c = (a->key < b->key) || (dimension2D && (a->key < b->key) && (a->table_0 > b->table_0));
+    c = (a->key < b->key) || (dimension2D && (a->key == b->key) && (a->table_0 > b->table_0));
     return c;
     
 }
@@ -31,7 +31,7 @@ bool compare2D(elem_t* a, elem_t* b) {
 
 bool compare2D_(int a, int b) {
     bool c;
-    c = (arr[a].key < arr[b].key) || (dimension2D && (arr[a].key < arr[b].key) && (arr[a].table_0 > arr[b].table_0));
+    c = (arr[a].key < arr[b].key) || (dimension2D && (arr[a].key == arr[b].key) && (arr[a].table_0 > arr[b].table_0));
     return c;
 
 }
