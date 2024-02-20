@@ -27,6 +27,7 @@ static int mergesort_comparator(const void *a_, const void *b_,
     const elem_t *a = a_;
     const elem_t *b = b_;
     int comp_key = (a->key > b->key) - (a->key < b->key);
+    comp_key = (comp_key == 0) * ((a->table_0 < b->table_0) - (a->table_0 > b->table_0)) + !(comp_key == 0) * comp_key;
     int comp_orp_id = (a->orp_id > b->orp_id) - (a->orp_id < b->orp_id);
     return (comp_key << 1) + comp_orp_id;
 }
@@ -115,11 +116,13 @@ static int mergesort(elem_t *arr, elem_t *out, size_t length,
 struct sample {
     uint64_t key;
     uint64_t orp_id;
+    bool table_0;
 };
 
 static int elem_sample_comparator(const elem_t *a, const struct sample *b) {
     int comp_key = (a->key > b->key) - (a->key < b->key);
     int comp_orp_id = (a->orp_id > b->orp_id) - (a->orp_id < b->orp_id);
+    comp_key = (comp_key == 0) * ((a->table_0 < b->table_0) - (a->table_0 > b->table_0)) + !(comp_key == 0) * comp_key;
     return (comp_key << 1) + comp_orp_id;
 }
 
@@ -158,11 +161,13 @@ static void quickselect_helper(void *args_) {
             for (size_t i = 0; i < num_targets; i++) {
                 samples[i].key = 0;
                 samples[i].orp_id = 0;
+                samples[i].table_0 = true;
             }
         } else {
             for (size_t i = 0; i < num_targets; i++) {
                 samples[i].key = arr[left].key;
                 samples[i].orp_id = arr[left].orp_id;
+                samples[i].table_0 = arr[left].table_0;
             }
         }
         ret = 0;
@@ -175,6 +180,7 @@ static void quickselect_helper(void *args_) {
     struct sample pivot = {
         .key = arr[left].key,
         .orp_id = arr[left].key,
+        .table_0 = arr[left].table_0,
     };
 
     /* Partition data based on pivot. */
