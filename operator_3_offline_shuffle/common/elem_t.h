@@ -12,10 +12,10 @@
 #define max_output_bytes 1073741824
 
 typedef int ojoin_int_type;
-
+typedef unsigned long long uint64_t2;
 typedef struct elem {
     //char key[105];
-    uint64_t key;
+    uint64_t2 key;
     uint64_t orp_id;
     bool table_0;
     //char unused[103];

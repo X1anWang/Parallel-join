@@ -264,6 +264,12 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     //printf("\n check 1. \n");
     //printf("\n Sort completed");
 
+    
+    for (int i = 0; i < length; i++) {
+        printf("\n Check array: key %llu tid %d", arr[i].key, (1 - arr[i].table_0));
+    }
+    
+
     get_time(true);
     if (number_threads == 1) {
         condition = arr[0].table_0;
@@ -275,7 +281,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
             o_memcpy(arr_temp, arr + i, sizeof(*arr), condition);
         }
     } else {
-    printf("\n check 2. \n");
+    //printf("\n check 2. \n");
     for (int i = 0; i < number_threads; i++) {
         idx_start_thread[i + 1] = idx_start_thread[i] + length_thread + (i < length_extra);
 

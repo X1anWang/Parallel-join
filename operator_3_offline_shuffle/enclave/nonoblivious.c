@@ -114,7 +114,7 @@ static int mergesort(elem_t *arr, elem_t *out, size_t length,
 }
 
 struct sample {
-    uint64_t key;
+    uint64_t2 key;
     uint64_t orp_id;
     bool table_0;
 };
@@ -161,7 +161,7 @@ static void quickselect_helper(void *args_) {
             for (size_t i = 0; i < num_targets; i++) {
                 samples[i].key = 0;
                 samples[i].orp_id = 0;
-                samples[i].table_0 = true;
+                samples[i].table_0 = false;
             }
         } else {
             for (size_t i = 0; i < num_targets; i++) {

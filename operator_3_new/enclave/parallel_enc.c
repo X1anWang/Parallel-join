@@ -255,6 +255,74 @@ void ecall_start_work(void) {
     bitonic_free();
 }
 
+
+uint64_t2 ato_unsigned_int64(const char* str)
+{
+	uint64_t2 e = 0;
+	uint64_t2 tmpKeep = 0;
+	int i = 0;
+	const int len = strlen(str);
+	
+	if (len <= 0) {
+		goto EXIT_FUN;
+	}
+	
+	for (i = 0; i < len; i++) {
+		if (str[i] > '9' || str[i] < '0') {
+			break;
+		}
+		tmpKeep = e;
+		e *= 10;
+		e += (((uint64_t2)(str[i] - '0')));
+		if (tmpKeep > e) {
+			e = 0;
+			goto EXIT_FUN;
+		}
+	}
+
+EXIT_FUN:
+	return e;
+}
+
+long long int WeAtoll(const char* str_ptr)
+{
+    int size = strlen(str_ptr);
+    while ((*str_ptr == ' ' || *str_ptr == '-' || *str_ptr == '+')) {
+        str_ptr++;
+        size--;
+    }
+ 
+    const char* str_ptr_cpy = str_ptr;
+    long long int digtal = 0;
+    long long int out_flow = 0;
+ 
+    while (*str_ptr != '\0') {
+        if (*str_ptr < '0' || *str_ptr > '9') {
+            break;
+        }
+        out_flow = digtal;
+        digtal = digtal * 10 + (*str_ptr - '0');
+     
+        if (out_flow > digtal) {  // 出现溢出才会出现这种情况
+            str_ptr_cpy--;
+            if (*str_ptr_cpy == '-') {
+                return LLONG_MIN;
+            }
+            return LLONG_MAX;
+        }
+        
+        str_ptr++;
+    }
+ 
+    str_ptr_cpy--;
+    if (*str_ptr_cpy == '-') {
+        digtal = -digtal;
+    }
+ 
+    return digtal;
+}
+
+
 int ecall_scalable_oblivious_join(char *input_path, size_t len) {
     printf("\nEntered enclave");
     (void)len;
@@ -269,13 +337,13 @@ int ecall_scalable_oblivious_join(char *input_path, size_t len) {
     //printf("\nlength 1 is:%d", length1);
     //printf("\nlength 2 is:%d", length2);
     for (int i = 0; i < length1; i++) {
-        arr[i].key = atoll(strtok(NULL, " "));
+        arr[i].key = ato_unsigned_int64(strtok(NULL, " "));
         //arr[i].sum = atof(strtok(NULL, " "));
         strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);
         arr[i].table_0 = true;
     }
     for (int i = length1; i < length1 + length2; i++) {
-        arr[i].key = atoll(strtok(NULL, " "));
+        arr[i].key = ato_unsigned_int64(strtok(NULL, " "));
         //strncpy(arr[i].key, , 105);
         //arr[i].sum = atof(strtok(NULL, " "));
         strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH);

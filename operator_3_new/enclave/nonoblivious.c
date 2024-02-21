@@ -113,7 +113,7 @@ static int mergesort(elem_t *arr, elem_t *out, size_t length,
 }
 
 struct sample {
-    uint64_t key;
+    uint64_t2 key;
     uint64_t orp_id;
 };
 
