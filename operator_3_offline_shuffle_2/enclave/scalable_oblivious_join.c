@@ -253,7 +253,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     control_bit_ = calloc(length, sizeof(*control_bit_));
     printf("\n Our foreign key join - start. \n");
     printf("\n Number of threads: %d \n", number_threads);
-    //orshuffle_init();
+    orshuffle_init();
     init_time();
 
 
@@ -316,7 +316,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     free(arr_);
     free(control_bit);
     free(control_bit_);
-    //orshuffle_free();
+    orshuffle_free();
     
     return;
 }

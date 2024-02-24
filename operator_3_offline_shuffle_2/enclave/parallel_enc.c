@@ -333,7 +333,7 @@ int ecall_scalable_oblivious_join(char *input_path, size_t len) {
     int length1 = atoi(length);
     length = strtok(NULL, "\n");
     int length2 = atoi(length);
-    elem_t *arr = calloc((length1 + length2), sizeof(*arr));
+    elem_t *arr = calloc(4 * (length1 + length2), sizeof(*arr));
     //printf("\nlength 1 is:%d", length1);
     //printf("\nlength 2 is:%d", length2);
     for (int i = 0; i < length1; i++) {
