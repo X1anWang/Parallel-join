@@ -259,6 +259,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
 
     //bitonic_sort_(arr, true, 0, length, number_threads, true);
     orshuffle_sort(arr, length, number_threads);
+    arr = arr + 2 * length;
     //printf("\n check 1. \n");
     //printf("\n Sort completed");
 

@@ -831,7 +831,7 @@ int orshuffle_sort(elem_t *arr, size_t length, size_t num_threads) {
     }
 
     /* Copy the output to the final output. */
-    memcpy(arr, buf, local_length * sizeof(*arr));
+    //memcpy(arr, buf, local_length * sizeof(*arr));
 
 
     if (world_rank == 0) {
