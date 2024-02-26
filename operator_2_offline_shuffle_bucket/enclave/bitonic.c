@@ -481,8 +481,9 @@ inline int prev_pow_two(int x) {
 }
 
 void bitonic_compare(bool ascend, int i, int j) {
-    bool condition = !(compare2D_(i, j) == ascend);
-    o_memswap(arr+i, arr+j, sizeof(*arr),condition);
+    if(!(compare2D_(i, j) == ascend)) {
+        o_memswap(arr+i, arr+j, sizeof(*arr),true);
+    }
 }
 
 struct bitonic_merge_args_1 {

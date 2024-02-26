@@ -251,6 +251,8 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     ret = bucket_sort(arr, length, number_threads);
     //bitonic_sort_(arr, true, 0, length, number_threads, false);
     get_time(true);
+    arr = arr + length;
+    get_time(false);
 
     //printf("\n Sort completed");
 

@@ -165,7 +165,15 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     };
 
 
-    oblivious_compact_elem(arr, control_bit, length1, 1, number_threads);
+
+    //oblivious_compact_elem(arr, control_bit, length1, 1, number_threads);
+    get_time(true);
+    for (int i = 0; i < length1; i++) {
+        if (control_bit[i]) {
+            memcpy(result + o, arr + i, sizeof(*arr));
+            o++;
+        }
+    }
     get_time(true);
     (void) ret;
     bucket_free();

@@ -23,6 +23,7 @@
 #include "enclave/parallel_enc.h"
 #include "enclave/synch.h"
 #include "enclave/threading.h"
+#include "enclave/bitonic.h"
 
 static size_t total_length;
 
@@ -838,7 +839,8 @@ int bucket_sort(elem_t *arr, size_t length, size_t num_threads) {
     }
 
     /* Nonoblivious sort. */
-    ret = nonoblivious_sort(buf, arr, length, compress_len, num_threads);
+    //ret = nonoblivious_sort(buf, arr, length, compress_len, num_threads);
+    bitonic_sort_(buf, true, 0, length, num_threads, true);
     if (ret) {
         handle_error_string("Error in nonoblivious sort");
         goto exit;

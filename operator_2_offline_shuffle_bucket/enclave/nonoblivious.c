@@ -1122,7 +1122,7 @@ int nonoblivious_sort(elem_t *arr, elem_t *out, size_t length,
         }
 
         /* Copy local sort output to final output. */
-        memcpy(arr, out, length * sizeof(*arr));
+        //memcpy(arr, out, length * sizeof(*arr));
 
         struct timespec time_finish;
         if (clock_gettime(CLOCK_REALTIME, &time_finish)) {

@@ -39,4 +39,5 @@ enclave/bucket.o: enclave/bucket.c enclave/bucket.h \
  /opt/openenclave/share/pkgconfig/../../include/openenclave/3rdparty/libc/pthread.h \
  /opt/openenclave/share/pkgconfig/../../include/openenclave/3rdparty/libc/sched.h \
  enclave/mpi_tls.h common/ocalls.h enclave/nonoblivious.h \
- enclave/parallel_enc.h enclave/synch.h enclave/threading.h
+ enclave/parallel_enc.h enclave/synch.h enclave/threading.h \
+ enclave/bitonic.h
