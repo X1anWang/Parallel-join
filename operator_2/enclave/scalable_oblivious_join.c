@@ -246,6 +246,8 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
 
     bitonic_sort_(arr, true, 0, length, number_threads, false);
 
+    get_time(true);
+
     //printf("\n Sort completed");
 
     if (number_threads == 1) {

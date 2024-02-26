@@ -25,6 +25,11 @@
 #include "enclave/threading.h"
 #include "enclave/bitonic.h"
 
+#ifndef DISTRIBUTED_SGX_SORT_HOSTONLY
+#include <openenclave/enclave.h>
+#include "enclave/parallel_t.h"
+#endif
+
 static size_t total_length;
 
 /* Thread-local buffer used for generic operations. */
@@ -838,23 +843,10 @@ int bucket_sort(elem_t *arr, size_t length, size_t num_threads) {
         goto exit;
     }
 
-    /* Nonoblivious sort. */
-    //ret = nonoblivious_sort(buf, arr, length, compress_len, num_threads);
-    bitonic_sort_(buf, true, 0, local_length, num_threads, false);
+    
     if (ret) {
         handle_error_string("Error in nonoblivious sort");
         goto exit;
-    }
-
-    if (world_rank == 0) {
-        printf("assign_ids       : %f\n",
-                get_time_difference(&time_start, &time_assign_ids));
-        printf("merge_split      : %f\n",
-                get_time_difference(&time_assign_ids, &time_merge_split));
-        printf("compression      : %f\n",
-                get_time_difference(&time_merge_split, &time_compress));
-        printf("shuffle          : %f\n",
-                get_time_difference(&time_start, &time_compress));
     }
 
 exit:

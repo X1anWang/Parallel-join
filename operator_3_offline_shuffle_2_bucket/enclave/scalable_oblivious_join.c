@@ -273,6 +273,8 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     */
 
     get_time(false);
+    bitonic_sort_(arr, true, 0, length, number_threads, true);
+    get_time(true);
     if (number_threads == 1) {
         condition = arr[0].table_0;
         o_memcpy(arr_temp, arr, sizeof(*arr), condition);

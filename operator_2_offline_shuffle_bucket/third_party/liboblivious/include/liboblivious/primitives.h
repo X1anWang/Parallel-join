@@ -139,12 +139,20 @@ static inline void o_swapc(unsigned char *restrict a, unsigned char *restrict b,
             : "flags");
     *a = a_i;
     *b = b_i;
-#else
+#else // 1 0
     unsigned char mask = ~((unsigned char) cond - 1);
-    *a ^= *b;
-    *b ^= *a & mask;
-    *a ^= *b;
+    *a ^= *b; // 1 0
+    *b ^= *a & mask; // 1 0
+    *a ^= *b; // 1 0
 #endif
+}
+
+
+static inline void o_swapc2(unsigned char *restrict a, unsigned char *restrict b) {
+    
+    *a ^= *b; // 1 0
+    *b ^= *a; // 1 0
+    *a ^= *b; // 1 0
 }
 
 #ifdef LIBOBLIVIOUS_CMOV
@@ -543,6 +551,15 @@ static inline void o_memswap(void *restrict a_, void *restrict b_, size_t n,
         o_swapc(&a[i], &b[i], cond);
     }
 #endif
+}
+
+static inline void o_memswap2(void *restrict a_, void *restrict b_) {
+    unsigned char *restrict a = a_;
+    unsigned char *restrict b = b_;
+
+    for (size_t i = 0; i < 32; i++) {
+        o_swapc2(&a[i], &b[i]);
+    }
 }
 
 static inline void o_memaccess(void *restrict readp_, void *restrict writep_,
