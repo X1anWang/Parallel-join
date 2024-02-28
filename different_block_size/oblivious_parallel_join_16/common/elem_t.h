@@ -7,10 +7,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define ELEM_SIZE 128
-#define ELEM_STRUCT_SIZE 19
-#define DATA_LENGTH 4
-
 typedef int ojoin_int_type;
 
 typedef struct elem {
