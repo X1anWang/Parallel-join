@@ -28,7 +28,7 @@
 #include "enclave/parallel_t.h"
 #endif
 
-#define MAX_OUTPUT_LENGTH 131072
+#define MAX_OUTPUT_LENGTH 33554432
 //#define MAX_OUTPUT_LENGTH 2147483648
 
 
@@ -204,14 +204,6 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     int length_result;
     index_target = calloc(length1, sizeof(*index_target));
     index_target2 = calloc(length2, sizeof(*index_target2));
-    elem_t *arr1 = calloc(MAX_OUTPUT_LENGTH, sizeof(*arr1));
-    elem_t *arr2 = calloc(MAX_OUTPUT_LENGTH, sizeof(*arr2));
-    for (int i = 0; i < MAX_OUTPUT_LENGTH; i++) {
-        arr1[i].key = 1;
-        arr2[i].key = 2;
-    }
-    int *index_target_ = calloc(MAX_OUTPUT_LENGTH, sizeof(*index_target_));
-    int *index_target2_ = calloc(MAX_OUTPUT_LENGTH, sizeof(*index_target2_));
     //bitonic_init();
     init_time2();
     init_time();
@@ -305,8 +297,13 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     */
     length_result = index_target[length1 - 1] + arr[length1 - 1].table_0 * arr[length1 - 1].m1;
     //printf("\nStep 4 - 1\n");
+    elem_t *arr1 = malloc(length_result * sizeof(*arr1));
+    elem_t *arr2 = malloc(length_result * sizeof(*arr2));
+    int *index_target_ = malloc(length_result * sizeof(*index_target_));
+    int *index_target2_ = malloc(length_result * sizeof(*index_target2_));
     length_thread = length_result / number_threads;
     length_extra = length_result % number_threads;
+    get_time(true);
     //printf("\nStep 4 - 2\n");
     for (int i = 0; i < number_threads; i++) {
         index_start_thread[i + 1] = index_start_thread[i] + length_thread + (i < length_extra);

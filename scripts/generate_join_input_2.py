@@ -1,6 +1,6 @@
 import random
 
-power_list = [16, 18, 20, 22, 24, 26, 28, 30]
+power_list = [14, 15, 16, 18, 20, 22, 24, 26, 28, 30]
 data_max = 100
 
 for i in power_list:
