@@ -185,17 +185,10 @@ void ecall_start_sort_work(void) {
     }
 
 
-    /* Initialize sort. */
-    if (bitonic_init()) {
-        handle_error_string("Error initializing sort");
-        return;
-    }
+
 
     /* Start work. */
     thread_start_work();
-
-    /* Free sort. */
-    bitonic_free();
 
 }
 
@@ -212,19 +205,8 @@ int ecall_bitonic_sort(void) {
 
     algorithm_type = SORT_BITONIC;
 
-    /* Initialize sort. */
-    if (bitonic_init()) {
-        handle_error_string("Error initializing sort");
-        goto exit;
-    }
-
-    /* Sort. */
-    bitonic_sort(arr, length_total, total_num_threads, false);
-
     ret = 0;
 
-    bitonic_free();
-exit:
     return ret;
 }
 
@@ -323,16 +305,11 @@ int ecall_verify_joined(void) {
 
 void ecall_start_work(void) {
         /* Initialize sort. */
-    if (bitonic_init()) {
-        handle_error_string("Error initializing sort");
-        return;
-    }
+
 
     /* Start work. */
     thread_start_work();
 
-    /* Free sort. */
-    bitonic_free();
 }
 
 int ecall_scalable_oblivious_join(char *input_path, size_t len) {

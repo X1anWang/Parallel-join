@@ -183,7 +183,7 @@ void soj_scan_2(void *voidargs) {
 void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output_path){
     
     // Step(0): Initialize local variable
-    printf("\nBitonoic sort based parallel join start...");
+    printf("\nBitonic sort based parallel join start...");
     printf("\nInput length: %d and %d", length1, length2);
     printf("\n key and value size is: %d (Bytes)", (DATA_LENGTH + 4));
     printf("\nNumber of threads: %d\n", number_threads);

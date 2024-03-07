@@ -25,6 +25,7 @@
 
 #ifndef DISTRIBUTED_SGX_SORT_HOSTONLY
 #include <openenclave/enclave.h>
+#include <openenclave/advanced/mallinfo.h>
 #include "enclave/parallel_t.h"
 #endif
 
@@ -202,16 +203,15 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     int length_result;
     index_target = calloc(length1, sizeof(*index_target));
     index_target2 = calloc(length2, sizeof(*index_target2));
-    elem_t *arr1 = calloc(MAX_OUTPUT_LENGTH, sizeof(*arr1));
-    elem_t *arr2 = calloc(MAX_OUTPUT_LENGTH, sizeof(*arr2));
-    int *index_target_ = calloc(MAX_OUTPUT_LENGTH, sizeof(*index_target_));
-    int *index_target2_ = calloc(MAX_OUTPUT_LENGTH, sizeof(*index_target2_));
-    bitonic_init();
+    elem_t *arr1;
+    elem_t *arr2;
+    int *index_target_;
+    int *index_target2_;
     init_time2();
     init_time();
 
     // Step(1): 1st sort
-    bitonic_sort_(arr, true, 0, length, number_threads, false);
+    bitonic_sorta(arr, length, number_threads);
     get_time(true);
     //printf("\nStep 1 - completed");
 
@@ -288,6 +288,12 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     // Step(4): Parallel oblivious distribute elements to their target index
     aggregation_tree_i(index_target, index_target2, arr, arr_, length1, length2, number_threads);
     get_time(true);
+    oe_mallinfo_t info0;
+    oe_result_t rc0 = oe_allocator_mallinfo(&info0);
+    printf("\n\nHeap size current is: %ld\n", info0.current_allocated_heap_size);
+    printf("Heap size peak is: %ld\n\n", info0.peak_allocated_heap_size);
+    (void)rc0;
+    get_time(false);
     /*
     printf("\nStep 4 - 0\n");
     for (int i = 0; i < length1; i++) {
@@ -299,6 +305,11 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     */
     length_result = index_target[length1 - 1] + arr[length1 - 1].table_0 * arr[length1 - 1].m1;
     //printf("\nStep 4 - 1\n");
+    arr1 = malloc(length_result* sizeof(*arr1));
+    arr2 = malloc(length_result* sizeof(*arr2));
+    index_target_ = malloc(length_result* sizeof(*index_target_));
+    index_target2_ = malloc(length_result* sizeof(*index_target2_));
+    get_time(true);
     length_thread = length_result / number_threads;
     length_extra = length_result % number_threads;
     //printf("\nStep 4 - 2\n");
@@ -373,7 +384,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     // Step(6): Align the second table by sort
     aggregation_tree_j_order(arr2, length_result, number_threads);
     get_time(true);
-    bitonic_sort_(arr2, true, 0, length_result, number_threads, true);
+    bitonic_sortb(arr2, length_result, number_threads);
     get_time(true);
     //printf("\nStep 6 - completed");
 
@@ -407,7 +418,12 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     }
     char_current[0] = '\0';
 
-    bitonic_free();
+    oe_mallinfo_t info;
+    oe_result_t rc = oe_allocator_mallinfo(&info);
+    printf("\n\nHeap size current is: %ld\n", info.current_allocated_heap_size);
+    printf("Heap size peak is: %ld\n\n", info.peak_allocated_heap_size);
+    (void)rc;
+
     aggregation_tree_free();
     free(arr_);
     free(control_bit);
