@@ -281,13 +281,22 @@ int ecall_scalable_oblivious_join(char *input_path, size_t len) {
     // Parse to table
     char *length;
     length = strtok(input_path, " ");
-    int length1 = atoi(length);
-
-    arr = malloc(length1 * sizeof(*arr));
-
-    printf("\nTime is:\n");
+    int length1 = 4 * atoi(length);
 
     init_time();
+    arr = malloc(length1 * sizeof(*arr));
+    get_time(true);
+
+    for (int i = 0; i < length1; i++) {
+        arr[i].key = (rand() % 1000);
+    }
+    get_time(true);
+
+    for (int i = 0; i < length1; i++) {
+        arr[i].key = (rand() % 1000);
+    }
+    get_time(true);
+
     for (int i = 0; i < length1; i++) {
         arr[i].key = (rand() % 1000);
     }
