@@ -1,0 +1,24 @@
+
+The output file path is:/home/xian/input_2power_of_24_output.txt
+Entered enclave
+ Size of block is:48
+Bitonoic sort based parallel join start...
+Input length: 8388608 and 8388608
+ key and value size is: 16 (Bytes)
+Number of threads: 1
+130.715850
+6.610572
+6.838784
+50.726142
+4.429294
+11.594487
+27.651844
+3.512957
+4.208973
+53.638264
+
+Join completed, total time:299.928034
+
+Output length is: 8388608
+Returned
+Exit enclave
