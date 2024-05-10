@@ -93,6 +93,9 @@ make
 
 Before running the algorithms, please check sizes of your input files are within the limitation in host/parallel.c (corresponding to the MAX_BUF_SIZE value), and please double-check the SGX enclave configuration (enclave/parallel.conf) is compatible with your machine.
 
+1. MAX_BUF_SIZE limitation in host/parallel.c
+2. enclave EPC configuration
+
 Please feel free to
 * create a [issue report](https://github.com/x1anwang/Parallel-join/issues).
 * Emails are also welcome: [Xian](mailto:xwanggj@connect.ust.hk)
