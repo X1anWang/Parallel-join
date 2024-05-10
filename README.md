@@ -3,14 +3,14 @@ This is the implementation of oblivious parallel join and other operators. We pr
 
 ## Code Structure
     .
-    ├── data                          # Data folder
-    │   └── big_data_benchmark        # Dataset of the Big Data Benchmark    
-    ├── obliviator_fk_join            # Oblivious parallel foreign key join
-    ├── obliviator_join               # Oblivious parallel (non-foreign key) join
-    ├── operator_1                    # Oblivious scan operator
-    ├── operator_2                    # Oblivious aggregation operator
-    ├── operator_3                    # Oblivious foreign key join for BDB
-    ├── scripts                       # Scripts for dependencies and datasets
+    ├── data                      # Data folder
+    │   └── big_data_benchmark    # Dataset of the Big Data Benchmark    
+    ├── fk_join                   # Oblivious parallel foreign key join
+    ├── join                      # Oblivious parallel (non-foreign key) join
+    ├── operator_1                # Oblivious parallel scan operator
+    ├── operator_2                # Oblivious parallel aggregation operator
+    ├── operator_3                # Oblivious parallel foreign key join for BDB
+    ├── scripts                   # Scripts for dependencies and datasets
     └── README.md
 
 ## Dependencies
