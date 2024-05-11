@@ -1,4 +1,4 @@
-# Oblivious Parallel Join and Other Operators
+# OBLIVIATOR: Oblivious Parallel Joins and Other Operators
 This is the implementation of oblivious parallel join and other operators. We provide here their codes and scripts to deploy and run it.
 
 ## Code Structure

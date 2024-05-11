@@ -1,10 +1,12 @@
 import random
+import os
 
 power_list = [16, 18, 20, 22, 24, 26, 28, 30]
 data_max = 100
+os.makedirs("../data/synthesized/")
 
 for i in power_list:
-    name = "join_input_1x1_2power_"+str(i)+".txt"
+    name = "../data/synthesized/join_input_1x1_2power_"+str(i)+".txt"
     file = open(name, 'w')
     file.write(str(pow(2,i-1))+" "+str(pow(2,i-1))+"\n")
     file.write("\n")
