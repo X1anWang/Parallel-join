@@ -1,4 +1,4 @@
-# OBLIVIATOR: Oblivious Parallel Joins and Other Operators
+# Oblivious Parallel Joins and Other Operators
 This is the implementation of oblivious parallel join and other operators. We provide here their codes and scripts to deploy and run it.
 
 ## Code Structure
@@ -14,7 +14,7 @@ This is the implementation of oblivious parallel join and other operators. We pr
     └── README.md
 
 ## Dependencies
-This project need gcc-7 and g++-7. This project requires Ubuntu 20.04 LTS to run. The following libraries are required:
+The code (especially its configuration) in this repository is originally tested on Microsoft [Standard_DC32s_v3](https://learn.microsoft.com/en-us/azure/virtual-machines/dv3-dsv3-series) machines. This project need gcc-7 and g++-7. This project requires Ubuntu 20.04 LTS to run. The following libraries are required:
 
 - [Open Enclave](https://github.com/openenclave/openenclave)
 
@@ -41,61 +41,52 @@ python3 /scripts/generate_join_input_2.py
 python3 /scripts/generate_join_input_3.py
 ```
 
-To test with the dataset from [Big Data Benchmark](https://amplab.cs.berkeley.edu/benchmark/), use the files in data folder directly. TPC-H datasets should be re-formed to the same format to the above datasets, i.e., first 2 numbers indicating the element numbers of each table, and followed by elements from table 1 and 2 respectively.
+To test with the dataset from [Big Data Benchmark](https://amplab.cs.berkeley.edu/benchmark/), please use the files in data folder directly. [TPC-H](https://www.tpc.org/default5.asp) datasets should be re-formed to the same format to the above datasets, i.e., first 2 numbers indicating the element numbers of each table, and followed by elements from table 1 and 2 respectively. You may refer to /scripts/figure10_tpch_1.py, /scripts/figure10_tpch_2.py, /scripts/figure10_tpch_3.py and /scripts/figure11_tpch.py to know more details about how we operate TPC-H datasets.
 
-## Oblivious Parallel Join
-To run our oblivious parallel join, please run the following commands. Corresponding output results will be generated and saved as .txt file in the input file directory.
+## Oblivious parallel join (figure 9)
+
+To run our oblivious parallel join, please run the following commands. Corresponding output results will be generated and saved as .txt file in their input file directories, and time consuming information will be printed on the screen and saved in result folder.
 
 ```bash
-cd oblivious_parallel_join
-make clean
-make
-./host/parallel ./enclave/parallel_enc.signed number_thread input_file
+cd ~/Parallel-join/scripts/;
+chmod +x ./figure9.sh;
+./figure9.sh;
 ```
 
-## Oblivious Parallel Foreign Key Join
+## Foreign key join (figure 10)
+
+To run our oblivious and parallel foreign key join, please download [TPC-H](https://www.tpc.org/default5.asp) datasets and process its raw datasets based on codes in the scripts folder. Then run the following command.
 
 ```bash
-cd oblivious_parallel_foreign_key_join
-make clean
-make
-./host/parallel ./enclave/parallel_enc.signed number_thread input_file
+cd ~/Parallel-join/scripts/;
+chmod +x ./figure10_prepare.sh;
+./figure10_prepare.sh;
+
+./host/parallel ./enclave/parallel_enc.signed [number of threads] [input file path];
 ```
 
-## BDB Query 1: Scan
+## Other operators (figure 11)
+
+To reproduce result in Figure 11 (a), please download [TPC-H](https://www.tpc.org/default5.asp) datasets and process its raw datasets based on ./scripts/figure11_tpch.py and following commands below. For big data benchmark operators, run the following command directly.
 
 ```bash
-cd operator_1
-make clean
-make
-./host/parallel ./enclave/parallel_enc.signed number_thread input_file
-```
+cd ~/Parallel-join/fk_join;
+make clean; make;
+./host/parallel ./enclave/parallel_enc.signed [number of threads] [input file path];
 
-## BDB Query 2: Aggregation
-
-```bash
-cd operator_2
-make clean
-make
-./host/parallel ./enclave/parallel_enc.signed number_thread input_file
-```
-
-## BDB Query 3: Join
-
-```bash
-cd operator_3
-make clean
-make
-./host/parallel ./enclave/parallel_enc.signed number_thread input_file
+cd ~/Parallel-join/scripts/;
+chmod +x ./figure11.sh;
+./figure11.sh;
 ```
 
 ## Help
 
-Before running the algorithms, please check sizes of your input files are within the limitation in host/parallel.c (corresponding to the MAX_BUF_SIZE value), and please double-check the SGX enclave configuration (enclave/parallel.conf) is compatible with your machine.
+If you encounter any warning/error or want to run the algorithms on other datasets and machines, please check
 
-1. MAX_BUF_SIZE limitation in host/parallel.c
-2. enclave EPC configuration
+1. Sizes of your input files are within the limitation in host/parallel.c (corresponding to the MAX_BUF_SIZE value)
+2. Please double-check the SGX enclave configuration (enclave/parallel.conf) is enough and compatible with your machine
+3. MAX_BUF_SIZE limitation in host/parallel.c is equal or larger than the input and output file size
 
 Please feel free to
 * create a [issue report](https://github.com/x1anwang/Parallel-join/issues).
-* Emails are also welcome: [Xian](mailto:xwanggj@connect.ust.hk)
+* Emails are also welcome: [Xian:xwanggj@connect.ust.hk](mailto:xwanggj@connect.ust.hk)
