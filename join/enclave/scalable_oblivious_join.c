@@ -157,7 +157,7 @@ void soj_scan_2(void *voidargs) {
 }
 
 void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output_path){
-    printf("\n(5) Entered oblivator oblivious parallel join function");
+    printf("\n(5) Entered obliviator oblivious parallel join function");
     printf("\n(6) Input length: %d and %d", length1, length2);
     printf("\n(7) key and value size is: %ld and %d (Bytes)", sizeof(arr[0].key), DATA_LENGTH);
     printf("\n(8) Number of threads: %d", number_threads);

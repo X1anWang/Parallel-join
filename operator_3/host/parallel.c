@@ -26,7 +26,6 @@ FILE *output_file;
 static int init_mpi(int *argc, char ***argv) {
     int ret;
 
-    /* Initialize MPI. */
     int threading_provided;
     ret = MPI_Init_thread(argc, argv, MPI_THREAD_MULTIPLE, &threading_provided);
     if (ret) {
@@ -39,7 +38,6 @@ static int init_mpi(int *argc, char ***argv) {
         goto exit;
     }
 
-    /* Get world rank and size. */
     ret = MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
     if (ret) {
         handle_mpi_error(ret, "MPI_Comm_rank");
@@ -78,9 +76,6 @@ int time_join(enum algorithm_type algorithm_type) {
 #endif
     int ret;
 
-
-    /* Time sort and join. */
-
     struct timespec start;
     ret = timespec_get(&start, TIME_UTC);
     if (!ret) {
@@ -109,17 +104,10 @@ fclose(input_file);
     }
 
     printf("\nExit enclave\n");
-    free(buf);
-    //fwrite(buf, 1, strlen(buf), output_file);
+    fwrite(buf, 1, strlen(buf), output_file);
     fclose(output_file);
+    free(buf);
     MPI_Barrier(MPI_COMM_WORLD);
-
-    struct timespec end;
-    ret = timespec_get(&end, TIME_UTC);
-    if (!ret) {
-        perror("ending timespec_get");
-        goto exit_free_arr;
-    }
 
 exit_free_arr:
 #ifndef DISTRIBUTED_SGX_SORT_HOSTONLY
@@ -136,8 +124,6 @@ exit_free_arr:
 
 int main(int argc, char **argv) {
     int ret = -1;
-
-    /* Read arguments. */
 
 #ifndef DISTRIBUTED_SGX_SORT_HOSTONLY
     if (argc < 4) {
@@ -161,17 +147,11 @@ int main(int argc, char **argv) {
         return ret;
     }
 
-    //size_t num_runs = 1;
-
-    /* Init MPI. */
-
     ret = init_mpi(&argc, &argv);
     pthread_t threads[num_threads - 1];
     if (ret) {
         goto exit;
     }
-
-    /* Create enclave. */
 
     if (ret) {
         handle_error_string("init_mpi");
@@ -196,8 +176,6 @@ int main(int argc, char **argv) {
         goto exit_mpi_finalize;
     }
 #endif /* DISTRIBUTED_SGX_SORT_HOSTONLY */
-
-    /* Init enclave with threads. */
 
 #ifndef DISTRIBUTED_SGX_SORT_HOSTONLY
     result =

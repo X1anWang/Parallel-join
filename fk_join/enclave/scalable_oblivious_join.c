@@ -24,7 +24,6 @@
 #endif
 
 bool* control_bit;
-bool* control_bit_;
 
 static long long number_threads;
 
@@ -180,10 +179,9 @@ void aggregation_tree_op2(void *voidargs) {
 
     for (long long i = index_thread_start; i < index_thread_end; i++) {
         condition = !arr[i].table_0 && !arr_[i].table_0;
-        condition2 = arr[i].key == arr_temp[0].key;
+        condition2 = (arr[i].key == arr_temp[0].key);
         o_memcpy(arr_ + i, arr_temp, sizeof(*arr_temp), condition && condition2);
         control_bit[i] = !arr[i].table_0 && arr_[i].table_0;
-        control_bit_[i] = !arr[i].table_0 && arr_[i].table_0;
     }
 
     free(arr_temp);
@@ -191,7 +189,7 @@ void aggregation_tree_op2(void *voidargs) {
 }
 
 void scalable_oblivious_join(elem_t *arr, long long length1, long long length2, char* output_path){
-    printf("\n(5) Entered oblivator oblivious parallel fk join function");
+    printf("\n(5) Entered obliviator oblivious parallel fk join function");
     printf("\n(6) Input length: %lld and %lld", length1, length2);
     printf("\n(7) key and value size is: %ld and %d (Bytes)", sizeof(arr[0].key), DATA_LENGTH);
     printf("\n(8) Number of threads: %lld", number_threads);
@@ -213,7 +211,6 @@ void scalable_oblivious_join(elem_t *arr, long long length1, long long length2, 
     ag_tree[0].complete2 = true;
     elem_t* arr_temp = calloc(1, sizeof(*arr_temp));
     control_bit = calloc(length, sizeof(*control_bit));
-    control_bit_ = calloc(length, sizeof(*control_bit_));
     int result_length = 0;
     control_bit[0] = false;
     printf("\n(9) Start obliviator fk join now, we do: 1) sort, 2) aggregate duplication,");
@@ -300,7 +297,6 @@ void scalable_oblivious_join(elem_t *arr, long long length1, long long length2, 
     free(arr_temp);
     free(arr_);
     free(control_bit);
-    free(control_bit_);
     
     return;
 }

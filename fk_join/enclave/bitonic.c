@@ -42,20 +42,6 @@ void bitonic_compare(bool ascend, long long i, long long j) {
     o_memswap(arr+i, arr+j, sizeof(*arr),condition);
 }
 
-struct bitonic_merge_args_1 {
-    bool ascend;
-    long long lo;
-    long long hi;
-    long long number_threads;
-};
-
-struct bitonic_merge_args_2 {
-    bool ascend;
-    long long a;
-    long long b;
-    long long c; //mid_len
-};
-
 void bitonic_merge_2(void *voidargs) {
     struct bitonic_merge_args_2 *args = (struct bitonic_merge_args_2*)voidargs;
     bool ascend = args->ascend;

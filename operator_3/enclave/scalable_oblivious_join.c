@@ -23,15 +23,7 @@
 #include "enclave/parallel_t.h"
 #endif
 
-//#define COMMUNICATE
-
-#ifdef COMMUNICATE
-volatile bool timer_start = true;
-volatile bool timer_end = true;
-#endif
-
 bool* control_bit;
-bool* control_bit_;
 
 static int number_threads;
 
@@ -49,6 +41,26 @@ void reverse(char *s) {
     }
 }
 
+int my_len_key(char *key) {
+    int i = 0;
+
+    while ((key[i] != '\0') && (i < KEY_LENGTH)) i++;
+    
+    return i;
+}
+
+int my_len_key_2(char *key) {
+    int i = 0;
+    bool flag = true;
+
+    while ((key[i] != '\0') && (i < KEY_LENGTH)) {
+        flag = (key[i] != '\0') && flag;
+        i += flag;
+    }
+    
+    return i;
+}
+
 int my_len(char *data) {
     int i = 0;
 
@@ -61,10 +73,12 @@ int o_strcmp(char* str1, char* str2) {
     bool flag = false;
     int result = 0;
 
-    for (int i = 0; i < 105; i++) {
+    for (int i = 0; i < KEY_LENGTH; i++) {
         result = !flag * (-1 * (str1[i] < str2[i]) + 1 * (str1[i] > str2[i])) + flag * result;
         flag = (!flag && ((str1[i] < str2[i]) || (str1[i] > str2[i]))) || flag;
     }
+
+    result = (my_len_key_2(str1) == my_len_key_2(str2)) * result - (my_len_key_2(str1) < my_len_key_2(str2)) + (my_len_key_2(str1) > my_len_key_2(str2));
 
     return result;
 }
@@ -92,41 +106,16 @@ void itoa(int n, char *s, int *len) {
 }
 
 int scalable_oblivious_join_init(int nthreads) {
-
-    number_threads = nthreads;
-    //aggregation_tree_init(number_threads);
-
-    
+    number_threads = nthreads; 
     return 0;
-
 }
 
 void scalable_oblivious_join_free() {
     return;
-    //aggregation_tree_free();
-    //aligned_expand_free();
 }
 
-struct tree_node_op2 {
-    volatile char key_first[105];
-    volatile char key_last[105];
-    volatile char key_prefix[105];
-    volatile bool table0_fisrt;
-    volatile bool table0_last;
-    volatile bool table0_prefix;
-    volatile bool complete1;
-    volatile bool complete2;
-};
 
 struct tree_node_op2* ag_tree;
-
-struct args_op2 {
-    int index_thread_start;
-    int index_thread_end;
-    elem_t* arr;
-    elem_t* arr_;
-    int thread_order;
-};
 
 void aggregation_tree_op2(void *voidargs) {
     struct args_op2 *args = (struct args_op2*) voidargs;
@@ -139,52 +128,39 @@ void aggregation_tree_op2(void *voidargs) {
     bool condition;
     bool condition2;
 
-
-
-
     elem_t* arr_temp = calloc(1, sizeof(*arr_temp));
     arr_temp[0].table_0 = false;
     condition = arr[index_thread_start].table_0;
     o_memcpy(arr_temp, arr + index_thread_start, sizeof(*arr), condition);
     for (int i = index_thread_start + 1; i < index_thread_end; i++) {
         condition = arr[i].table_0;
-        condition2 = arr[i].key == arr_temp[0].key;
+        condition2 = (o_strcmp(arr[i].key, arr_temp[0].key) == 0);
         o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), ((!condition)&&condition2));
         o_memcpy(arr_temp, arr + i, sizeof(*arr), condition);
     }
 
-    for (int u = 0; u < 105; u++) {
+    for (int u = 0; u < KEY_LENGTH; u++) {
         ag_tree[cur_tree_node].key_last[u] = arr_temp[0].key[u];
     }
 
     ag_tree[cur_tree_node].table0_last = arr_temp[0].table_0;
     ag_tree[cur_tree_node].complete1 = true;
 
-    #ifdef COMMUNICATE
-    if(timer_start) {
-        timer_start = false;
-        printf("\nTimer start\n");
-        get_time(false);
-    }
-    #endif
-
-    int temp; // aggregation tree start
+    int temp;
     while(cur_tree_node % 2 == 0 && 0 < cur_tree_node) {
         temp = (cur_tree_node - 2) / 2;
         while(!ag_tree[cur_tree_node - 1].complete1) {
             ;
         };
         condition = ag_tree[cur_tree_node].table0_last;
-        for (int u = 0; u < 105; u++) {
+        for (int u = 0; u < KEY_LENGTH; u++) {
             ag_tree[temp].key_last[u] = condition * ag_tree[cur_tree_node].key_last[u] + !condition * ag_tree[cur_tree_node - 1].key_last[u];
         }
         ag_tree[temp].table0_last = condition + ag_tree[cur_tree_node - 1].table0_last;
         ag_tree[temp].complete1 = true;
         cur_tree_node = temp;
     }
-    //complete2[cur_tree_node] = true;
     int temp1;
-    //printf("\nCheck 3, from thread %d\n", thread_order);
 
     while(cur_tree_node < thread_order) {
         temp = cur_tree_node * 2 + 2;
@@ -192,11 +168,9 @@ void aggregation_tree_op2(void *voidargs) {
         while(!ag_tree[cur_tree_node].complete2) {
             ;
         };
-        condition = 
-
         ag_tree[temp1].table0_prefix = ag_tree[cur_tree_node].table0_prefix;
         ag_tree[temp].table0_prefix = ag_tree[temp1].table0_last + ag_tree[cur_tree_node].table0_prefix;
-        for (int u = 0; u < 105; u++) {
+        for (int u = 0; u < KEY_LENGTH; u++) {
             ag_tree[temp1].key_prefix[u] = ag_tree[cur_tree_node].key_prefix[u];
             ag_tree[temp].key_prefix[u] = ag_tree[temp1].table0_last * ag_tree[temp1].key_last[u] + !ag_tree[temp1].table0_last * ag_tree[cur_tree_node].key_prefix[u];
         }
@@ -204,44 +178,33 @@ void aggregation_tree_op2(void *voidargs) {
         ag_tree[temp].complete2 = true;
         cur_tree_node = temp;
     }
-    //printf("\nCheck 4, from thread %d\n", thread_order);
+    
     while(!ag_tree[thread_order].complete2) {
         ;
     };
 
-    #ifdef COMMUNICATE
-    if(timer_end) {
-        timer_end = false;
-        get_time(true);
-        printf("\nTimer end\n");
-    }
-    #endif
-
-    for (int u = 0; u < 105; u++) {
+    for (int u = 0; u < KEY_LENGTH; u++) {
         arr_temp[0].key[u] = ag_tree[thread_order].key_prefix[u];
     }
     arr_temp[0].table_0 = ag_tree[thread_order].table0_prefix;
 
     for (int i = index_thread_start; i < index_thread_end; i++) {
-        condition = !arr[i].table_0 && !arr[i].table_0;
-        condition2 = arr[i].key == arr_temp[0].key;
+        condition = !arr[i].table_0 && !arr_[i].table_0;
+        condition2 = (o_strcmp(arr[i].key, arr_temp[0].key) == 0);
         o_memcpy(arr_ + i, arr_temp, sizeof(*arr_temp), condition && condition2);
         control_bit[i] = !arr[i].table_0 && arr_[i].table_0;
-        control_bit_[i] = !arr[i].table_0 && arr_[i].table_0;
     }
-    //printf("\nCheck 6, from thread %d\n", thread_order);
 
     free(arr_temp);
     return;
 }
 
 void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output_path){
-    #ifdef COMMUNICATE
-    timer_start = true;
-    timer_end = true;
-    #endif
+    printf("\n(5) Entered obliviator operator_3 function");
+    printf("\n(6) Input length: %d and %d", length1, length2);
+    printf("\n(7) key and value size is: %ld and %d (Bytes)", sizeof(arr[0].key), DATA_LENGTH);
+    printf("\n(8) Number of threads: %d", number_threads);
     int length = length1 + length2;
-    (void)output_path;
     elem_t* arr_ = calloc(length, sizeof(*arr_));
     for (int i = 0; i < length; i++) {
         arr_[i].table_0 = false;
@@ -259,32 +222,29 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     ag_tree[0].complete2 = true;
     elem_t* arr_temp = calloc(1, sizeof(*arr_temp));
     control_bit = calloc(length, sizeof(*control_bit));
-    control_bit_ = calloc(length, sizeof(*control_bit_));
-    printf("\n Our foreign key join - start. \n");
-    printf("\n Number of threads: %d \n", number_threads);
+    int length_result;
+    printf("\n(9) Start obliviator operator 3 now, we do: 1) sort, 2) aggregate duplication,");
+    printf("\n\t 3) oblivious compaction\n");
+    init_time2();
     init_time();
 
-
-    bitonic_sort_(arr, true, 0, length, number_threads, true);
-    //printf("\n check 1. \n");
-    //printf("\n Sort completed");
-
+    bitonic_sort(arr, true, 0, length, number_threads, true);
     get_time(true);
+
     if (number_threads == 1) {
         condition = arr[0].table_0;
         o_memcpy(arr_temp, arr, sizeof(*arr), condition);
         for (int i = 1; i < length; i++) {
             condition = arr[i].table_0;
-            condition2 = arr[i].key == arr_temp[i].key;
-            o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), (!condition)&& condition2);
+            condition2 = (o_strcmp(arr[i].key, arr_temp[0].key) == 0);
+            control_bit[i] = (!condition) && condition2;
+            o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), control_bit[i]);
             o_memcpy(arr_temp, arr + i, sizeof(*arr), condition);
         }
     } else {
-    printf("\n check 2. \n");
-    for (int i = 0; i < number_threads; i++) {
-        idx_start_thread[i + 1] = idx_start_thread[i] + length_thread + (i < length_extra);
-
-        args_op2_[i].arr = arr;
+        for (int i = 0; i < number_threads; i++) {
+            idx_start_thread[i + 1] = idx_start_thread[i] + length_thread + (i < length_extra);
+            args_op2_[i].arr = arr;
             args_op2_[i].arr_ = arr_;
             args_op2_[i].index_thread_start = idx_start_thread[i];
             args_op2_[i].index_thread_end = idx_start_thread[i + 1];
@@ -301,22 +261,45 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
                 multi_thread_aggregation_tree_1[i].single.arg = &args_op2_[i];
                 thread_work_push(&multi_thread_aggregation_tree_1[i]);
             }
-    }
-    aggregation_tree_op2(&args_op2_[number_threads - 1]);
-    for (int i = 0; i < number_threads - 1; i++) {
-        thread_wait(&multi_thread_aggregation_tree_1[i]);
-    }
+        }
+        aggregation_tree_op2(&args_op2_[number_threads - 1]);
+        for (int i = 0; i < number_threads - 1; i++) {
+            thread_wait(&multi_thread_aggregation_tree_1[i]);
+        }
     }
     get_time(true);
-    oblivious_compact_elem(arr, control_bit, length, 1, number_threads);
-    oblivious_compact_elem(arr_, control_bit_, length, 1, number_threads);
+    
+    length_result = oblivious_compact_elem(arr, control_bit, length, 1, number_threads);
+    oblivious_compact_elem(arr_, control_bit, length, 1, number_threads);
     get_time(true);
+    
+    printf("\n(10) Join completed, total time:");
+    get_time2(true);
+    printf("\n(11) Output length is: %d", length_result);
+    printf("\n(12) Now write out output result");
+
+    char *char_current = output_path;
+    for (int i = 0; i < length_result; i++) {
+        int key_len1 = my_len_key(arr[i].key);
+        int key_len2 = my_len_key(arr_[i].key);
+        int data_len1 = my_len(arr[i].data);
+        int data_len2 = my_len(arr_[i].data);
+
+        strncpy(char_current, arr[i].key, key_len1);
+        char_current += key_len1; char_current[0] = ' '; char_current += 1;
+        strncpy(char_current, arr[i].data, data_len1);
+        char_current += data_len1; char_current[0] = ' '; char_current += 1;
+        strncpy(char_current, arr_[i].key, key_len2);
+        char_current += key_len2; char_current[0] = ' '; char_current += 1;
+        strncpy(char_current, arr_[i].data, data_len2);
+        char_current += data_len2; char_current[0] = '\n'; char_current += 1;
+    }
+    char_current[0] = '\0';
 
     free(ag_tree);
     free(arr_temp);
     free(arr_);
     free(control_bit);
-    free(control_bit_);
     
     return;
 }

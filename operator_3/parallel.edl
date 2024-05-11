@@ -64,22 +64,12 @@ enclave {
     };
 
     trusted {
-        public int ecall_sort_init(int world_rank, int world_size, size_t num_threads);
-        public int ecall_sort_alloc_arr(size_t total_length);
-        public void ecall_sort_free_arr(void);
-        public void ecall_sort_free(void);
-        public int ecall_verify_sorted(void);
-        public void ecall_start_sort_work(void);
         public void ecall_release_threads(void);
         public void ecall_unrelease_threads(void);
-        public int ecall_bitonic_sort(void);
-        public void ecall_get_stats([out] struct ocall_enclave_stats *stats);
 
         public int ecall_ojoin_init(int world_rank, int world_size, size_t num_threads);
-        public int ecall_ojoin_alloc_arr(int total_length, int key_scope);
         public void ecall_ojoin_free_arr();
         public void ecall_ojoin_free(void);
-        public int ecall_verify_joined(void);
         public void ecall_start_work(void);
         public int ecall_scalable_oblivious_join([in, out, size=len] char *input_path, size_t len);
     };
