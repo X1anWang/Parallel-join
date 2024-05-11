@@ -14,7 +14,7 @@ This is the implementation of oblivious parallel join and other operators. We pr
     └── README.md
 
 ## Dependencies
-The code (especially its configuration) in this repository is originally tested on Microsoft [Standard_DC32s_v3](https://learn.microsoft.com/en-us/azure/virtual-machines/dv3-dsv3-series) machines. This project need gcc-7 and g++-7. This project requires Ubuntu 20.04 LTS to run. The following libraries are required:
+The code (especially its enclave configuration) in this repository is originally tested on Microsoft [Standard_DC32s_v3](https://learn.microsoft.com/en-us/azure/virtual-machines/dv3-dsv3-series) machines. This project need gcc-7 and g++-7. This project requires Ubuntu 20.04 LTS to run. The following libraries are required:
 
 - [Open Enclave](https://github.com/openenclave/openenclave)
 
@@ -85,8 +85,7 @@ If you encounter any warning/error or want to run the algorithms on other datase
 
 1. Sizes of your input files are within the limitation in host/parallel.c (corresponding to the MAX_BUF_SIZE value)
 2. Please double-check the SGX enclave configuration (enclave/parallel.conf) is enough and compatible with your machine
-3. MAX_BUF_SIZE limitation in host/parallel.c is equal or larger than the input and output file size
 
 Please feel free to
 * create a [issue report](https://github.com/x1anwang/Parallel-join/issues).
-* Emails are also welcome: [Xian:xwanggj@connect.ust.hk](mailto:xwanggj@connect.ust.hk)
+* Emails are welcome: [Xian: xwanggj@connect.ust.hk](mailto:xwanggj@connect.ust.hk)
