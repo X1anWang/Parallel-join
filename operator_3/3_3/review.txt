@@ -1,0 +1,12 @@
+
+The output file path is:/home/xian/Parallel-join/data/big_data_benchmark/bdb_query3_step3_sample_input_output.txt
+Entered enclave
+ BDB Operator 2 - start. 
+0.089379
+0.009143
+0.097767
+
+Completed, total time is:0.196528
+
+Returned
+Exit enclave

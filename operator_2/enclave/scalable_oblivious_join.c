@@ -79,7 +79,7 @@ void scalable_oblivious_join_free() {
     return;
 }
 
-struct tree_node_op2 {
+struct tree_node_op {
     volatile int key_first;
     volatile int key_last;
     volatile float sum_first;
@@ -90,9 +90,9 @@ struct tree_node_op2 {
     volatile bool complete2;
 };
 
-struct tree_node_op2* ag_tree;
+struct tree_node_op* ag_tree;
 
-struct args_op2 {
+struct args_op {
     int index_thread_start;
     int index_thread_end;
     float* sum;
@@ -100,8 +100,8 @@ struct args_op2 {
     int thread_order;
 };
 
-void aggregation_tree_op2(void *voidargs) {
-    struct args_op2 *args = (struct args_op2*) voidargs;
+void aggregation_tree_op(void *voidargs) {
+    struct args_op *args = (struct args_op*) voidargs;
     int index_thread_start = args->index_thread_start;
     int index_thread_end = args->index_thread_end;
     float* sum = args->sum;
@@ -114,11 +114,11 @@ void aggregation_tree_op2(void *voidargs) {
 
     sum[index_thread_start] = arr[index_thread_start].sum;
     for (int i = index_thread_start + 1; i < index_thread_end; i++) {
-        condition = arr[i].key == arr[i - 1].key;
+        condition = (arr[i].key == arr[i - 1].key);
         sum[i] = condition * sum[i - 1] + arr[i].sum;
     }
     for (int i = index_thread_end - 2; index_thread_start <= i; i--) {
-        condition = arr[i].key == arr[i + 1].key;
+        condition = (arr[i].key == arr[i + 1].key);
         sum[i] = condition * sum[i + 1] + !condition * sum[i];
     }
 
@@ -134,8 +134,8 @@ void aggregation_tree_op2(void *voidargs) {
         while(!ag_tree[cur_tree_node - 1].complete1) {
             ;
         };
-        condition = ag_tree[cur_tree_node - 1].key_last == ag_tree[cur_tree_node].key_last;
-        condition1 = ag_tree[cur_tree_node - 1].key_first == ag_tree[cur_tree_node].key_first;
+        condition = (ag_tree[cur_tree_node - 1].key_last == ag_tree[cur_tree_node].key_last);
+        condition1 = (ag_tree[cur_tree_node - 1].key_first == ag_tree[cur_tree_node].key_first);
         ag_tree[temp].key_first = ag_tree[cur_tree_node - 1].key_first;
         ag_tree[temp].key_last = ag_tree[cur_tree_node].key_last;
         ag_tree[temp].sum_last = condition * ag_tree[cur_tree_node - 1].sum_last + ag_tree[cur_tree_node].sum_last;
@@ -152,9 +152,9 @@ void aggregation_tree_op2(void *voidargs) {
         while(!ag_tree[cur_tree_node].complete2) {
             ;
         };
-        condition = ag_tree[temp1].key_last == ag_tree[temp].key_first;
-        condition1 = ag_tree[cur_tree_node].key_first == ag_tree[temp].key_first;
-        condition2 = ag_tree[cur_tree_node].key_last == ag_tree[temp1].key_last;
+        condition = (ag_tree[temp1].key_last == ag_tree[temp].key_first);
+        condition1 = (ag_tree[cur_tree_node].key_first == ag_tree[temp].key_first);
+        condition2 = (ag_tree[cur_tree_node].key_last == ag_tree[temp1].key_last);
 
         ag_tree[temp1].sum_prefix = ag_tree[cur_tree_node].sum_prefix;
         ag_tree[temp].sum_prefix = condition * ag_tree[temp1].sum_last + condition1 * ag_tree[cur_tree_node].sum_prefix;
@@ -172,14 +172,14 @@ void aggregation_tree_op2(void *voidargs) {
     };
 
     int key_first = arr[index_thread_start].key;
-    int sum_previous = ag_tree[thread_order].sum_prefix;
+    float sum_previous = ag_tree[thread_order].sum_prefix;
     int key_last = arr[index_thread_end - 1].key;
-    int sum_last = ag_tree[thread_order].sum_suffix;
+    float sum_last = ag_tree[thread_order].sum_suffix;
 
     for (int i = index_thread_start; i < index_thread_end; i++) {
         condition = (arr[i].key == key_first);
         condition1 = (arr[i].key == key_last);
-        sum[i] += condition * sum_previous + condition1 * sum_last;
+        sum[i] = sum[i] + condition * sum_previous + condition1 * sum_last;
     }
 
     return;
@@ -197,7 +197,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     bool condition;
     int length_thread = length / number_threads;
     int length_extra = length % number_threads;
-    struct args_op2 args_op2_[number_threads];
+    struct args_op args_op_[number_threads];
     int idx_start_thread[number_threads + 1];
     idx_start_thread[0] = 0;
     struct thread_work multi_thread_aggregation_tree_1[number_threads - 1];
@@ -205,7 +205,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     ag_tree[0].sum_prefix = 0;
     ag_tree[0].sum_suffix = 0;
     ag_tree[0].complete2 = true;
-    printf("\n(9) Start obliviator operator_1 now, we do: 1) parallel scan, 2) oblivious compaction\n");
+    printf("\n(9) Start obliviator operator_2 (X = 3) now, we do: 1) sort, 2) parallel scan\n");
     init_time2();
     init_time();
 
@@ -215,39 +215,39 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     if (number_threads == 1) {
         sum[0] = arr[0].sum;
         for (int i = 1; i < length; i++) {
-            condition = arr[i].key == arr[i - 1].key;
+            condition = (arr[i].key == arr[i - 1].key);
             sum[i] = condition * sum[i - 1] + arr[i].sum;
         }
         for (int i = length - 2; 0 <= i; i--) {
-            condition = arr[i].key == arr[i + 1].key;
+            condition = (arr[i].key == arr[i + 1].key);
             sum[i] = condition * sum[i + 1] + !condition * sum[i];
         }
     } else {
         for (int i = 0; i < number_threads; i++) {
             idx_start_thread[i + 1] = idx_start_thread[i] + length_thread + (i < length_extra);
 
-            args_op2_[i].arr = arr;
-            args_op2_[i].sum = sum;
-            args_op2_[i].index_thread_start = idx_start_thread[i];
-            args_op2_[i].index_thread_end = idx_start_thread[i + 1];
+            args_op_[i].arr = arr;
+            args_op_[i].sum = sum;
+            args_op_[i].index_thread_start = idx_start_thread[i];
+            args_op_[i].index_thread_end = idx_start_thread[i + 1];
             if (number_threads == 6) {
-                args_op2_[i].thread_order = tree_node_idx_6[i];        
+                args_op_[i].thread_order = tree_node_idx_6[i];        
             } else if (number_threads == 48) {
-                args_op2_[i].thread_order = tree_node_idx_48[i];
+                args_op_[i].thread_order = tree_node_idx_48[i];
             } else {
-                args_op2_[i].thread_order = number_threads + i - 1;
+                args_op_[i].thread_order = number_threads + i - 1;
             }
             if (i < number_threads - 1) {
                 multi_thread_aggregation_tree_1[i].type = THREAD_WORK_SINGLE;
-                multi_thread_aggregation_tree_1[i].single.func = aggregation_tree_op2;
-                multi_thread_aggregation_tree_1[i].single.arg = &args_op2_[i];
+                multi_thread_aggregation_tree_1[i].single.func = aggregation_tree_op;
+                multi_thread_aggregation_tree_1[i].single.arg = &args_op_[i];
                 thread_work_push(&multi_thread_aggregation_tree_1[i]);
             }
-    }
-    aggregation_tree_op2(&args_op2_[number_threads - 1]);
-    for (int i = 0; i < number_threads - 1; i++) {
-        thread_wait(&multi_thread_aggregation_tree_1[i]);
-    }
+        }
+        aggregation_tree_op(&args_op_[number_threads - 1]);
+        for (int i = 0; i < number_threads - 1; i++) {
+            thread_wait(&multi_thread_aggregation_tree_1[i]);
+        }
     }
     get_time(true);
 
@@ -271,7 +271,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
 
         char sum2[20];
         int sum2_len;
-        sprintf(sum2, "%g", sum[i]);
+        sprintf(sum2, "%.2f", sum[i]);
         sum2_len = my_len(sum2);
 
         strncpy(char_current, string_key1, str1_len);
