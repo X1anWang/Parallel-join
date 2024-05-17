@@ -25,7 +25,10 @@
 
 
 static int number_threads;
-static bool *control_bit;
+//static bool *control_bit;
+int res_thread[100];
+
+#define MAX_DUMMY_ORDER 2147480000
 
 void reverse(char *s) {
     int i, j;
@@ -83,8 +86,8 @@ void scalable_oblivious_join_free() {
 struct soj_scan_1_args {
     int idx_st;
     int idx_ed;
-    bool* control_bit;
     elem_t *arr1;
+    int thread_order;
 };
 
 
@@ -92,11 +95,14 @@ void soj_scan_1(void *voidargs) {
     struct soj_scan_1_args *args = (struct soj_scan_1_args*)voidargs;
     int index_start = args->idx_st;
     int index_end = args->idx_ed;
-    bool* cb1 = args->control_bit;
+    //bool* cb1 = args->control_bit;
     elem_t *arr1 = args->arr1;
+    int thread_order = args->thread_order;
 
     for (int i = index_start; i < index_end; i++) {
-        cb1[i] = (88 < arr1[i].key);
+        //cb1[i] = (88 < arr1[i].key);
+        arr1[i].key = (88 < arr1[i].true_key) * i + (arr1[i].true_key <= 88) * MAX_DUMMY_ORDER;
+        res_thread[thread_order] += (88 < arr1[i].true_key);
     }
 
     return;
@@ -108,20 +114,55 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     printf("\n(6) Input length: %d", length1);
     printf("\n(7) key and value size is: %ld and %d (Bytes)", sizeof(arr[0].key), DATA_LENGTH);
     printf("\n(8) Number of threads: %d", number_threads);
-    control_bit = calloc(length1, sizeof(*control_bit));
+    //control_bit = calloc(length1, sizeof(*control_bit));
+    for (int i = 0; i < number_threads; i++) res_thread[i] = 0;
     (void)length2;
     int length_result = 0;
+    int length_thread = length1 / number_threads;
+    int length_extra = length1 % number_threads;
+    struct soj_scan_1_args soj_scan_1_args_[number_threads];
+    int index_start_thread[number_threads + 1];
+    index_start_thread[0] = 0;
+    struct thread_work soj_scan_1_[number_threads - 1];
     printf("\n(9) Start Opaque operator_1 now, we do: 1) parallel scan, 2) oblivious compaction\n");
     init_time2();
     init_time();
 
-    for (int i = 0; i < length1; i++) {
-        arr[i].key = 1 - (88 < arr[i].true_key);
-        length_result += (88 < arr[i].true_key);
+    if (number_threads == 1) {
+        for (int i = 0; i < length1; i++) {
+            arr[i].key = 1 - (88 < arr[i].true_key);
+            length_result += (88 < arr[i].true_key);
+        }
+    } else {
+        for (int i = 0; i < number_threads; i++) {
+            index_start_thread[i + 1] = index_start_thread[i] + length_thread + (i < length_extra);
+        
+            soj_scan_1_args_[i].idx_st = index_start_thread[i];
+            soj_scan_1_args_[i].idx_ed = index_start_thread[i + 1];
+            //soj_scan_1_args_[i].control_bit = control_bit;
+            soj_scan_1_args_[i].arr1 = arr;
+            soj_scan_1_args_[i].thread_order = i;
+
+            if (i < number_threads - 1) {
+                soj_scan_1_[i].type = THREAD_WORK_SINGLE;
+                soj_scan_1_[i].single.func = soj_scan_1;
+                soj_scan_1_[i].single.arg = soj_scan_1_args_ + i;
+                thread_work_push(soj_scan_1_ + i);
+            }
+        }
+        soj_scan_1(soj_scan_1_args_ + number_threads - 1);
+        for (int i = 0; i < number_threads; i++) {
+            if (i < number_threads - 1) {
+                thread_wait(soj_scan_1_ + i);
+            };
+        }
+        for (int i = 0; i < number_threads; i++) {
+            length_result += res_thread[i];
+        }
     }
     get_time(true);
 
-    bitonic_sort(arr, true, 0, length1, 1, false);
+    bitonic_sort(arr, true, 0, length1, number_threads);
     get_time(true);
 
     printf("\n(10) operator_1 completed, total time:");
