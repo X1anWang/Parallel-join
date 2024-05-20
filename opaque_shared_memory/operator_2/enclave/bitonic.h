@@ -6,27 +6,9 @@
 #include "common/defs.h"
 #include "common/elem_t.h"
 
-struct bitonic_sort_new_args {
-    bool ascend;
-    int lo;
-    int hi;
-    int number_threads;
-};
-
-struct bitonic_merge_args_1 {
-    bool ascend;
-    int lo;
-    int hi;
-    int number_threads;
-};
-
-struct bitonic_merge_args_2 {
-    bool ascend;
-    int a;
-    int b;
-    int c;
-};
-
-void bitonic_sort(elem_t *arr_, bool ascend , int lo, int hi, int num_threads);
+int bitonic_init(void);
+void bitonic_free(void);
+void bitonic_sort(elem_t *arr, size_t length, size_t num_threads, bool D2enable);
+void bitonic_sort_(elem_t *arr_, bool ascend , int lo, int hi, int num_threads, bool D2enable);
 
 #endif /* distributed-sgx-sort/enclave/bitonic.h */
