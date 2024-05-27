@@ -16,13 +16,10 @@
 
 #define SWAP_CHUNK_SIZE 4096
 
-static bool dimension2D;
 static elem_t *arr;
 
 bool compare2D(int a, int b) {
-    bool c;
-    c = (o_strcmp(arr[a].key, arr[b].key) == -1) || (dimension2D && (o_strcmp(arr[a].key, arr[b].key) == 0) && (arr[a].table_0 > arr[b].table_0));
-    return c;
+    return (o_strcmp(arr[a].key, arr[b].key) == -1) || ((o_strcmp(arr[a].key, arr[b].key) == 0) && (arr[a].table_0 > arr[b].table_0));
 }
 
 inline int prev_pow_two(int x) {
@@ -215,9 +212,8 @@ void bitonic_sort_new(void *voidargs) {
     bitonic_merge(&args_merge);
 }
 
-void bitonic_sort(elem_t *arr_, bool ascend, int lo, int hi, int number_threads, bool D2enable) {
+void bitonic_sort(elem_t *arr_, bool ascend, int lo, int hi, int number_threads) {
     arr = arr_;
-    dimension2D = D2enable;
     struct bitonic_merge_args_1 args = {
         .ascend = ascend,
         .lo = lo,

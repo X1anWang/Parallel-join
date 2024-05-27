@@ -229,7 +229,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     init_time2();
     init_time();
 
-    bitonic_sort(arr, true, 0, length, number_threads, true);
+    bitonic_sort(arr, true, 0, length, number_threads);
     get_time(true);
 
     /*
