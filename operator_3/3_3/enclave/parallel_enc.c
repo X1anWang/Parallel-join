@@ -89,7 +89,7 @@ int ecall_scalable_oblivious_join(char *input_path, size_t len) {
 
     for (int i = 0; i < length1; i++) {
         strncpy(key_temp, strtok(NULL, " "), 19);
-        arr[i].key = strtoull(key_temp, &key_temp_ptr, 19);
+        arr[i].key = strtoull(key_temp, &key_temp_ptr, 10);
         arr[i].pagerank = atoi(strtok(NULL, " "));
         arr[i].adrevenue = atof(strtok(NULL, "\n"));
     }

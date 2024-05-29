@@ -6,14 +6,15 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define DATA_LENGTH 233
+#define DATA_LENGTH 247
 #define KEY_LENGTH 22
 typedef int ojoin_int_type;
 
 typedef struct elem {
     char data[DATA_LENGTH];
-    char key[KEY_LENGTH];
     bool table_0;
+    uint64_t key;
+    //char unused[14];
     //bool unused;
 } elem_t;
 

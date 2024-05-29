@@ -19,7 +19,7 @@
 static elem_t *arr;
 
 bool compare2D(int a, int b) {
-    return (o_strcmp(arr[a].key, arr[b].key) == -1) || ((o_strcmp(arr[a].key, arr[b].key) == 0) && (arr[a].table_0 > arr[b].table_0));
+    return (arr[a].key < arr[b].key) || (((arr[a].key == arr[b].key)) && (arr[a].table_0 > arr[b].table_0));
 }
 
 inline int prev_pow_two(int x) {

@@ -83,13 +83,20 @@ int ecall_scalable_oblivious_join(char *input_path, size_t len) {
     length = strtok(NULL, "\n");
     int length2 = atoi(length);
     arr = calloc((length1 + length2), sizeof(*arr));
+    char key_temp[22];
+    char* key_temp_ptr;
+
     for (int i = 0; i < length1; i++) {
-        strncpy(arr[i].key, strtok(NULL, " "), KEY_LENGTH - 1);
+        strncpy(key_temp, strtok(NULL, " "), 21);
+        arr[i].key = strtoull(key_temp, &key_temp_ptr, 10);
+        //strncpy(arr[i].key, strtok(NULL, " "), KEY_LENGTH - 1);
         strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH - 1);
         arr[i].table_0 = true;
     }
     for (int i = length1; i < length1 + length2; i++) {
-        strncpy(arr[i].key, strtok(NULL, " "), KEY_LENGTH - 1);
+        strncpy(key_temp, strtok(NULL, " "), 21);
+        arr[i].key = strtoull(key_temp, &key_temp_ptr, 10);
+        //strncpy(arr[i].key, strtok(NULL, " "), KEY_LENGTH - 1);
         strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH - 1);
         arr[i].table_0 = false;
     }
@@ -102,6 +109,7 @@ int ecall_scalable_oblivious_join(char *input_path, size_t len) {
     printf("\n 0 th TID:%d key: %s", (1 - arr[0].table_0), arr[0].key);
     printf("\n %d th TID:%d key: %s", length1, (1 - arr[length1].table_0), arr[length1].key);
     */
+    /*
     for (int i = 0; i < KEY_LENGTH - 1; i++) {
         arr[0].key[i] = arr[0].key[i+1];
     }
@@ -111,15 +119,17 @@ int ecall_scalable_oblivious_join(char *input_path, size_t len) {
     for (int i = 0; i < KEY_LENGTH - 1; i++) {
         arr[length1].key[i] = arr[length1].key[i+1];
     }
+    */
     /*
     printf("\n 0 th TID:%d key: %s", (1 - arr[0].table_0), arr[0].key);
     printf("\n %d th TID:%d key: %s", length1, (1 - arr[length1].table_0), arr[length1].key);
     */
     /*
     for (int i = 0 ; i < length1 + length2; i++) {
-        printf("\n 222 %d th TID:%d key: %s", i, (1 - arr[i].table_0), arr[i].key);
+        printf("\n 222 %d th TID:%d key: %lu data: %s", i, (1 - arr[i].table_0), arr[i].key, arr[i].data);
     }
     */
+    
 
     printf("\n(4) Complete reading data");
     scalable_oblivious_join(arr, length1, length2, input_path);

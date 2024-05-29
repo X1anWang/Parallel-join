@@ -18,7 +18,6 @@ struct bitonic_merge_args_2 {
     int b;
     int c;
 };
-void bitonic_sort(elem_t *arr_, bool ascend , int lo, int hi, int num_threads);
-void bitonic_sort_(elem_t *arr_, bool ascend, int lo, int hi, int number_threads);
+void bitonic_sort(elem_t *arr_, bool ascend , int lo, int hi, int num_threads, bool dim2nd);
 
 #endif /* distributed-sgx-sort/enclave/bitonic.h */

@@ -6,9 +6,9 @@
 #include "common/ocalls.h"
 
 struct tree_node_op2 {
-    volatile char key_first[KEY_LENGTH];
-    volatile char key_last[KEY_LENGTH];
-    volatile char key_prefix[KEY_LENGTH];
+    volatile uint64_t key_first;
+    volatile uint64_t key_last;
+    volatile uint64_t key_prefix;
     volatile bool table0_fisrt;
     volatile bool table0_last;
     volatile bool table0_prefix;

@@ -134,14 +134,18 @@ void aggregation_tree_op2(void *voidargs) {
     o_memcpy(arr_temp, arr + index_thread_start, sizeof(*arr), condition);
     for (int i = index_thread_start + 1; i < index_thread_end; i++) {
         condition = arr[i].table_0;
-        condition2 = (o_strcmp(arr[i].key, arr_temp[0].key) == 0);
+        condition2 = (arr[i].key == arr_temp[0].key);
         o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), ((!condition)&&condition2));
         o_memcpy(arr_temp, arr + i, sizeof(*arr), condition);
     }
 
+    /*
     for (int u = 0; u < KEY_LENGTH; u++) {
         ag_tree[cur_tree_node].key_last[u] = arr_temp[0].key[u];
     }
+    */
+
+    ag_tree[cur_tree_node].key_last = arr_temp[0].key;
 
     ag_tree[cur_tree_node].table0_last = arr_temp[0].table_0;
     ag_tree[cur_tree_node].complete1 = true;
@@ -153,9 +157,12 @@ void aggregation_tree_op2(void *voidargs) {
             ;
         };
         condition = ag_tree[cur_tree_node].table0_last;
+        /*
         for (int u = 0; u < KEY_LENGTH; u++) {
             ag_tree[temp].key_last[u] = condition * ag_tree[cur_tree_node].key_last[u] + !condition * ag_tree[cur_tree_node - 1].key_last[u];
         }
+        */
+        ag_tree[temp].key_last = condition * ag_tree[cur_tree_node].key_last + !condition * ag_tree[cur_tree_node - 1].key_last;
         ag_tree[temp].table0_last = condition + ag_tree[cur_tree_node - 1].table0_last;
         ag_tree[temp].complete1 = true;
         cur_tree_node = temp;
@@ -170,10 +177,16 @@ void aggregation_tree_op2(void *voidargs) {
         };
         ag_tree[temp1].table0_prefix = ag_tree[cur_tree_node].table0_prefix;
         ag_tree[temp].table0_prefix = ag_tree[temp1].table0_last + ag_tree[cur_tree_node].table0_prefix;
+        /*
         for (int u = 0; u < KEY_LENGTH; u++) {
             ag_tree[temp1].key_prefix[u] = ag_tree[cur_tree_node].key_prefix[u];
             ag_tree[temp].key_prefix[u] = ag_tree[temp1].table0_last * ag_tree[temp1].key_last[u] + !ag_tree[temp1].table0_last * ag_tree[cur_tree_node].key_prefix[u];
         }
+        */
+        
+        ag_tree[temp1].key_prefix = ag_tree[cur_tree_node].key_prefix;
+        ag_tree[temp].key_prefix = ag_tree[temp1].table0_last * ag_tree[temp1].key_last + !ag_tree[temp1].table0_last * ag_tree[cur_tree_node].key_prefix;
+
         ag_tree[temp1].complete2 = true;
         ag_tree[temp].complete2 = true;
         cur_tree_node = temp;
@@ -183,14 +196,19 @@ void aggregation_tree_op2(void *voidargs) {
         ;
     };
 
+    /*
     for (int u = 0; u < KEY_LENGTH; u++) {
         arr_temp[0].key[u] = ag_tree[thread_order].key_prefix[u];
     }
+    */
+
+    arr_temp[0].key = ag_tree[thread_order].key_prefix;
+
     arr_temp[0].table_0 = ag_tree[thread_order].table0_prefix;
 
     for (int i = index_thread_start; i < index_thread_end; i++) {
         condition = !arr[i].table_0 && !arr_[i].table_0;
-        condition2 = (o_strcmp(arr[i].key, arr_temp[0].key) == 0);
+        condition2 = (arr[i].key == arr_temp[0].key);
         o_memcpy(arr_ + i, arr_temp, sizeof(*arr_temp), condition && condition2);
         control_bit[i] = !arr[i].table_0 && arr_[i].table_0;
     }
@@ -243,21 +261,11 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
         o_memcpy(arr_temp, arr, sizeof(*arr), condition);
         for (int i = 1; i < length; i++) {
             condition = arr[i].table_0;
-            condition2 = (o_strcmp(arr[i].key, arr_temp[0].key) == 0);
+            condition2 = (arr[i].key == arr_temp[0].key);
             control_bit[i] = (!condition) && condition2;
             o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), control_bit[i]);
             o_memcpy(arr_temp, arr + i, sizeof(*arr), condition);
-            /*
-            if (!arr[i].table_0) {
-                if (!control_bit[i]) {
-                    printf("\n Error ar %d th row", i);
-                } else {
-                    my_count++;
-                }
-            }
-            */
         }
-        //printf("\n My count is %d\n", my_count);
     } else {
         for (int i = 0; i < number_threads; i++) {
             idx_start_thread[i + 1] = idx_start_thread[i] + length_thread + (i < length_extra);
