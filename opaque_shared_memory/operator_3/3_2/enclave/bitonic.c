@@ -21,7 +21,7 @@ static bool dimension2D;
 
 bool compare2D(int a, int b) {
     bool c;
-    c = ((!dimension2D) && ((o_strcmp(arr[a].key, arr[b].key) == -1) || ((o_strcmp(arr[a].key, arr[b].key) == 0) && (arr[a].table_0 > arr[b].table_0)))) || ((dimension2D) && (arr[a].dummy_order < arr[b].dummy_order));
+    c = ((!dimension2D) && ((arr[a].key < arr[b].key) || (((arr[a].key == arr[b].key)) && (arr[a].table_0 > arr[b].table_0)))) || ((dimension2D) && (arr[a].dummy_order < arr[b].dummy_order));
     return c;
 }
 

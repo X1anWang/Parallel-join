@@ -6,15 +6,16 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define DATA_LENGTH 229
+#define DATA_LENGTH 243
 #define KEY_LENGTH 22
 typedef int ojoin_int_type;
 
 typedef struct elem {
     char data[DATA_LENGTH];
-    char key[KEY_LENGTH];
     bool table_0;
     int dummy_order;
+    //char key[KEY_LENGTH];
+    uint64_t key;
 } elem_t;
 
 static_assert(sizeof(elem_t) == 256, "Element should be 256 bytes");

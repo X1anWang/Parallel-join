@@ -132,7 +132,7 @@ void aggregation_tree_op2(void *voidargs) {
     o_memcpy(arr_temp, arr + index_thread_start, sizeof(*arr), condition);
     for (int i = index_thread_start + 1; i < index_thread_end; i++) {
         condition = arr[i].table_0;
-        condition2 = (o_strcmp(arr[i].key, arr_temp[0].key) == 0);
+        condition2 = (arr[i].key == arr_temp[0].key);
         o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), ((!condition) && condition2));
         o_memcpy(arr_temp, arr + i, sizeof(*arr), condition);
         // res_thread[thread_order] += ((!condition)&&condition2);
@@ -177,7 +177,7 @@ void aggregation_tree_op3(void *voidargs) {
     o_memcpy(arr_temp, arr_thread_last + thread_order - 1, sizeof(*arr_), true);
     for (int i = index_thread_start; i < index_thread_end; i++) {
         condition = !arr2[i].table_0 && !arr_[i].table_0;
-        condition2 = (o_strcmp(arr2[i].key, arr_temp[0].key) == 0);
+        condition2 = (arr2[i].key == arr_temp[0].key);
         o_memcpy(arr_ + i, arr_temp, sizeof(*arr_temp), (condition && condition2));
         condition = !arr2[i].table_0 && arr_[i].table_0;
         arr2[i].dummy_order = condition * (index_thread_start + count++) + !condition * MAX_DUMMY_ORDER;
@@ -234,7 +234,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
         o_memcpy(arr_temp, arr, sizeof(*arr), condition);
         for (int i = 1; i < length; i++) {
             condition = arr[i].table_0;
-            condition2 = (o_strcmp(arr[i].key, arr_temp[0].key) == 0);
+            condition2 = (arr[i].key == arr_temp[0].key);
             condition3 = ((!condition) && condition2);
             o_memcpy(arr_ + i, arr_temp, sizeof(*arr_), condition3);
             o_memcpy(arr_temp, arr + i, sizeof(*arr), condition);
