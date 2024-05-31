@@ -73,9 +73,6 @@ void ecall_start_work(void) {
 }
 
 int ecall_scalable_oblivious_join(char *input_path, size_t len) {
-    printf("\n(1) Entered enclave");
-    printf("\n(2) Size of block is:%ld", sizeof(elem_t));
-    printf("\n(3) Start reading data");
     (void)len;
 
     char *length;
@@ -90,10 +87,8 @@ int ecall_scalable_oblivious_join(char *input_path, size_t len) {
         strncpy(arr[i].data, strtok(NULL, "\n"), DATA_LENGTH - 1);
     }
 
-    printf("\n(4) Complete reading data");
     scalable_oblivious_join(arr, length1, length2, input_path);
 
-    printf("\n(12) Returned from operator_2 fuction");
     free(arr);
 
     return 0;

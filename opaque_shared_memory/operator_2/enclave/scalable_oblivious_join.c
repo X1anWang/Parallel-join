@@ -129,15 +129,10 @@ void parallel_scan_2(void *voidargs) {
 }
 
 void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output_path){
-    printf("\n(5) Entered operator_2 function");
-    printf("\n(6) Input length: %d", length1);
-    printf("\n(7) key and value size is: %ld and %d (Bytes)", sizeof(arr[0].key), DATA_LENGTH);
-    printf("\n(8) Number of threads: %d", number_threads);
     int length = length1;
     (void)length2;
     float* sum = calloc(length, sizeof(*sum));
     bool condition;
-    //bool condition2;
     int length_thread = length / number_threads;
     int length_extra = length % number_threads;
     struct args_op args_op_[number_threads];
@@ -149,12 +144,9 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     args_op_[number_threads - 1].key_last = 0;
     struct thread_work multi_thread_aggregation_tree_1[number_threads - 1];
     struct thread_work multi_thread_aggregation_tree_2[number_threads - 1];
-    printf("\n(9) Start Opaque operator_2 now, we do: 1) sort, 2) parallel scan\n");
     init_time2();
-    init_time();
 
     bitonic_sort_(arr, true, 0, length, number_threads, false);
-    get_time(true);
 
     if (number_threads == 1) {
         sum[0] = arr[0].sum;
@@ -204,11 +196,8 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
             thread_wait(&multi_thread_aggregation_tree_2[i]);
         }
     }
-    get_time(true);
 
-    printf("\n(10) operator_1 completed, total time:");
     get_time2(true);
-    printf("\n(11) Now write out output result");
 
     char *char_current = output_path;
     for (int i = 0; i < length; i++) {

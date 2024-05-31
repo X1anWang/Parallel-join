@@ -157,10 +157,6 @@ void soj_scan_2(void *voidargs) {
 }
 
 void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output_path){
-    printf("\n(5) Entered obliviator oblivious parallel join function");
-    printf("\n(6) Input length: %d and %d", length1, length2);
-    printf("\n(7) key and value size is: %ld and %d (Bytes)", sizeof(arr[0].key), DATA_LENGTH);
-    printf("\n(8) Number of threads: %d", number_threads);
     aggregation_tree_init(number_threads);
     int length = length1 + length2;
     int length_thread = length / number_threads;
@@ -204,13 +200,9 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
         free(index_target_);
         free(index_target2_);
     #endif
-    printf("\n(9) Start obliviator join now, we do: 1) sort, 2) aggregate multiplication, 3) oblivious compaction, 4) aggregate target index");
-    printf("\n\t 5) oblivious distribution, 6) aggregate duplication, 7) align\n");
     init_time2();
-    init_time();
 
     bitonic_sort_(arr, true, 0, length, number_threads, false);
-    get_time(true);
 
     if (1 < number_threads) {
         aggregation_tree_m(arr, length, number_threads);
@@ -231,7 +223,6 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
             arr[i - 1].m1 = condition * arr[i].m1 + !condition * arr[i - 1].m1;
         }
     }
-    get_time(true);
 
     for (int i = 0; i < number_threads; i++) {
         index_start_thread[i + 1] = index_start_thread[i] + length_thread + (i < length_extra);
@@ -256,13 +247,11 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
             thread_wait(soj_scan_1_ + i);
         };
     }
-    //get_time(true);
+
     oblivious_compact_elem(arr, control_bit, length, 1, number_threads);
     oblivious_compact_elem(arr_, control_bit_, length, 1, number_threads);
-    get_time(true);
     
     aggregation_tree_i(index_target, index_target2, arr, arr_, length1, length2, number_threads);
-    get_time(true);
 
     length_result = index_target[length1 - 1] + arr[length1 - 1].table_0 * arr[length1 - 1].m1;
     #ifdef PRE_ALLOCATION
@@ -310,10 +299,8 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
             thread_wait(soj_scan_2_ + i);
         };
     }
-    //get_time(true);
     oblivious_distribute_elem(arr1, index_target_, length_result, number_threads);
     oblivious_distribute_elem(arr2, index_target2_, length_result, number_threads);
-    get_time(true);
 
     if (1 < number_threads) {
         aggregation_tree_dup(arr1, length_result, number_threads);
@@ -325,17 +312,11 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
             o_memcpy(arr2 + i, arr2 + i - 1, sizeof(*arr2), !arr2[i].has_value);
         }
     }
-    get_time(true);
 
     aggregation_tree_j_order(arr2, length_result, number_threads);
-    //get_time(true);
     bitonic_sort_(arr2, true, 0, length_result, number_threads, true);
-    get_time(true);
 
-    printf("\n(10) Join completed, total time:");
     get_time2(true);
-    printf("\n(11) Output length is: %d", length_result);
-    printf("\n(12) Now write out output result");
     
     char *char_current = output_path;
     for (int i = 0; i < length_result; i++) {

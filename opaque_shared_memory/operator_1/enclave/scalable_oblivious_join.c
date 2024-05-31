@@ -110,11 +110,6 @@ void soj_scan_1(void *voidargs) {
 
 
 void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output_path){
-    printf("\n(5) Entered operator_1 function");
-    printf("\n(6) Input length: %d", length1);
-    printf("\n(7) key and value size is: %ld and %d (Bytes)", sizeof(arr[0].key), DATA_LENGTH);
-    printf("\n(8) Number of threads: %d", number_threads);
-    //control_bit = calloc(length1, sizeof(*control_bit));
     for (int i = 0; i < number_threads; i++) res_thread[i] = 0;
     (void)length2;
     int length_result = 0;
@@ -124,9 +119,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     int index_start_thread[number_threads + 1];
     index_start_thread[0] = 0;
     struct thread_work soj_scan_1_[number_threads - 1];
-    printf("\n(9) Start Opaque operator_1 now, we do: 1) parallel scan, 2) oblivious compaction\n");
     init_time2();
-    init_time();
 
     if (number_threads == 1) {
         for (int i = 0; i < length1; i++) {
@@ -139,7 +132,6 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
         
             soj_scan_1_args_[i].idx_st = index_start_thread[i];
             soj_scan_1_args_[i].idx_ed = index_start_thread[i + 1];
-            //soj_scan_1_args_[i].control_bit = control_bit;
             soj_scan_1_args_[i].arr1 = arr;
             soj_scan_1_args_[i].thread_order = i;
 
@@ -160,15 +152,10 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
             length_result += res_thread[i];
         }
     }
-    get_time(true);
 
     bitonic_sort(arr, true, 0, length1, number_threads);
-    get_time(true);
 
-    printf("\n(10) operator_1 completed, total time:");
     get_time2(true);
-    printf("\n(11) Output length is: %d", length_result);
-    printf("\n(12) Now write out output result");
 
     char *char_current = output_path;
     for (int i = 0; i < length_result; i++) {

@@ -99,10 +99,6 @@ void aggregation_tree_op2(void *voidargs) {
 }
 
 void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output_path){
-    printf("\n(5) Entered operator_3 step_1 function");
-    printf("\n(6) Input length: %d", length1);
-    printf("\n(7) key and value size is: %ld and %d (Bytes)", sizeof(arr[0].key), DATA_LENGTH);
-    printf("\n(8) Number of threads: %d", number_threads);
     control_bit = calloc(length1, sizeof(*control_bit));
     int length_thread = length1 / number_threads;
     int length_extra = length1 % number_threads;
@@ -113,9 +109,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     int idx_start_thread[number_threads + 1];
     idx_start_thread[0] = 0;
     struct thread_work multi_thread_aggregation_tree_1[number_threads - 1];
-    printf("\n(9) Start Opaque operator_3 step_1 now, we do: 1) parallel scan, 2) oblivious compaction\n");
     init_time2();
-    init_time();
 
     if (number_threads == 1) {
         for (int i = 0; i < length1; i++) {
@@ -144,15 +138,10 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
             result_length += res_length[i];
         }
     }
-    get_time(true);
 
-    //oblivious_compact_elem(arr, control_bit, length1, 1, number_threads);
     bitonic_sort(arr, true, 0, length1, 1, false);
-    get_time(true);
 
-    printf("\n(10) operator_3 step_1 completed, total time:");
     get_time2(true);
-    printf("\n(11) Now write out output result");
 
     char *char_current = output_path;
     for (int i = 0; i < result_length; i++) {

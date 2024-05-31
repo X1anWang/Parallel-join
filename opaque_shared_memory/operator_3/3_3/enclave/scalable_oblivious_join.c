@@ -135,132 +135,6 @@ struct args_op {
     float sum_last3;
 };
 
-/*
-void aggregation_tree_op2(void *voidargs) {
-    struct args_op *args = (struct args_op*) voidargs;
-    int index_thread_start = args->index_thread_start;
-    int index_thread_end = args->index_thread_end;
-    int* count = args->count;
-    elem_t* arr = args->arr;
-    int thread_order = args->thread_order;
-    int cur_tree_node = thread_order;
-    bool condition;
-    bool condition1;
-    bool condition2;
-
-    //printf("\nCheck 1, from thread %d\n", thread_order);
-
-    arr[index_thread_start].avg_pagerank = arr[index_thread_start].pagerank;
-    arr[index_thread_start].sum_adrevenue = arr[index_thread_start].adrevenue;
-    count[index_thread_start] = 1;
-    for (int i = index_thread_start + 1; i < index_thread_end; i++) {
-        condition = (arr[i].key == arr[i - 1].key);
-        arr[i].sum_adrevenue = condition * arr[i - 1].sum_adrevenue + arr[i].adrevenue;
-        arr[i].avg_pagerank = condition * arr[i - 1].avg_pagerank + arr[i].pagerank;
-        count[i] = 1 + condition * count[i - 1];
-    }
-    for (int i = index_thread_end - 2; index_thread_start <= i; i--) {
-        condition = (arr[i].key == arr[i + 1].key);
-        arr[i].sum_adrevenue = condition * arr[i + 1].sum_adrevenue + !condition * arr[i].sum_adrevenue;
-        arr[i].avg_pagerank = condition * arr[i + 1].avg_pagerank + !condition * arr[i].avg_pagerank;
-        count[i] = condition * count[i + 1] + !condition * count[i];
-        //arr[i].avg_pagerank /= count[i];
-    }
-
-    //printf("\nCheck 2, from thread %d\n", thread_order);
-
-    ag_tree[cur_tree_node].key_first = arr[index_thread_start].key;
-    ag_tree[cur_tree_node].key_last = arr[index_thread_end - 1].key;
-    ag_tree[cur_tree_node].sum_first = arr[index_thread_start].avg_pagerank;
-    ag_tree[cur_tree_node].sum_last = arr[index_thread_end - 1].avg_pagerank;
-    ag_tree[cur_tree_node].sum_first2 = arr[index_thread_start].sum_adrevenue;
-    ag_tree[cur_tree_node].sum_last2 = arr[index_thread_end - 1].sum_adrevenue;
-    ag_tree[cur_tree_node].sum_first3 = count[index_thread_start];
-    ag_tree[cur_tree_node].sum_last3 = count[index_thread_end - 1];
-    ag_tree[cur_tree_node].complete1 = true;
-
-    int temp; // aggregation tree start
-    while(cur_tree_node % 2 == 0 && 0 < cur_tree_node) {
-        temp = (cur_tree_node - 2) / 2;
-        while(!ag_tree[cur_tree_node - 1].complete1) {
-            ;
-        };
-        condition = (ag_tree[cur_tree_node - 1].key_last == ag_tree[cur_tree_node].key_last);
-        condition1 = (ag_tree[cur_tree_node - 1].key_first == ag_tree[cur_tree_node].key_first);
-        ag_tree[temp].key_first = ag_tree[cur_tree_node - 1].key_first;
-        ag_tree[temp].key_last = ag_tree[cur_tree_node].key_last;
-        ag_tree[temp].sum_last = condition * ag_tree[cur_tree_node - 1].sum_last + ag_tree[cur_tree_node].sum_last;
-        ag_tree[temp].sum_first = condition1 * ag_tree[cur_tree_node].sum_first + ag_tree[cur_tree_node - 1].sum_first;
-        ag_tree[temp].sum_last2 = condition * ag_tree[cur_tree_node - 1].sum_last2 + ag_tree[cur_tree_node].sum_last2;
-        ag_tree[temp].sum_first2 = condition1 * ag_tree[cur_tree_node].sum_first2 + ag_tree[cur_tree_node - 1].sum_first2;
-        ag_tree[temp].sum_last3 = condition * ag_tree[cur_tree_node - 1].sum_last3 + ag_tree[cur_tree_node].sum_last3;
-        ag_tree[temp].sum_first3 = condition1 * ag_tree[cur_tree_node].sum_first3 + ag_tree[cur_tree_node - 1].sum_first3;
-        ag_tree[temp].complete1 = true;
-        cur_tree_node = temp;
-    }
-    //complete2[cur_tree_node] = true;
-    int temp1;
-    //printf("\nCheck 3, from thread %d\n", thread_order);
-
-    while(cur_tree_node < thread_order) {
-        temp = cur_tree_node * 2 + 2;
-        temp1 = cur_tree_node * 2 + 1;
-        while(!ag_tree[cur_tree_node].complete2) {
-            ;
-        };
-        condition = ag_tree[temp1].key_last == ag_tree[temp].key_first;
-        condition1 = ag_tree[cur_tree_node].key_first == ag_tree[temp].key_first;
-        condition2 = ag_tree[cur_tree_node].key_last == ag_tree[temp1].key_last;
-
-        ag_tree[temp1].sum_prefix = ag_tree[cur_tree_node].sum_prefix;
-        ag_tree[temp].sum_prefix = condition * ag_tree[temp1].sum_last + condition1 * ag_tree[cur_tree_node].sum_prefix;
-                
-        ag_tree[temp1].sum_suffix = condition * ag_tree[temp].sum_first + condition2 * ag_tree[cur_tree_node].sum_suffix;
-        ag_tree[temp].sum_suffix = ag_tree[cur_tree_node].sum_suffix;
-
-        ag_tree[temp1].sum_prefix2 = ag_tree[cur_tree_node].sum_prefix2;
-        ag_tree[temp].sum_prefix2 = condition * ag_tree[temp1].sum_last2 + condition1 * ag_tree[cur_tree_node].sum_prefix2;
-                
-        ag_tree[temp1].sum_suffix2 = condition * ag_tree[temp].sum_first2 + condition2 * ag_tree[cur_tree_node].sum_suffix2;
-        ag_tree[temp].sum_suffix2 = ag_tree[cur_tree_node].sum_suffix2;
-
-        ag_tree[temp1].sum_prefix3 = ag_tree[cur_tree_node].sum_prefix3;
-        ag_tree[temp].sum_prefix3 = condition * ag_tree[temp1].sum_last3 + condition1 * ag_tree[cur_tree_node].sum_prefix3;
-                
-        ag_tree[temp1].sum_suffix3 = condition * ag_tree[temp].sum_first3 + condition2 * ag_tree[cur_tree_node].sum_suffix3;
-        ag_tree[temp].sum_suffix3 = ag_tree[cur_tree_node].sum_suffix3;
-        
-        ag_tree[temp1].complete2 = true;
-        ag_tree[temp].complete2 = true;
-        cur_tree_node = temp;
-    }
-    while(!ag_tree[thread_order].complete2) {
-        ;
-    };
-
-    uint64_t key_first;
-    uint64_t key_last;
-    key_first = arr[index_thread_start].key;
-    float sum_previous = ag_tree[thread_order].sum_prefix;
-    key_last = arr[index_thread_end - 1].key;
-    float sum_last = ag_tree[thread_order].sum_suffix;
-    float sum_previous2 = ag_tree[thread_order].sum_prefix2;
-    float sum_last2 = ag_tree[thread_order].sum_suffix2;
-    float sum_previous3 = ag_tree[thread_order].sum_prefix3;
-    float sum_last3 = ag_tree[thread_order].sum_suffix3;
-    for (int i = index_thread_start; i < index_thread_end; i++) {
-        condition = (arr[i].key == key_first);
-        condition1 = (arr[i].key == key_last);
-        arr[i].avg_pagerank += condition * sum_previous + condition1 * sum_last;
-        arr[i].sum_adrevenue += condition * sum_previous2 + condition1 * sum_last2;
-        count[i] += condition * sum_previous3 + condition1 * sum_last3;
-        arr[i].avg_pagerank /= count[i];
-    }
-
-    return;
-}
-*/
-
 void parallel_scan_1(void *voidargs) {
     struct args_op *args = (struct args_op*) voidargs;
     int index_thread_start = args->index_thread_start;
@@ -337,13 +211,9 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     idx_start_thread[0] = 0;
     struct thread_work multi_thread_aggregation_tree_1[number_threads - 1];
     struct thread_work multi_thread_aggregation_tree_2[number_threads - 1];
-    printf("\n BDB Operator 2 - start. \n");
     init_time2();
-    init_time();
-
 
     bitonic_sort(arr, true, 0, length, number_threads, false);
-    get_time(true);
 
     if (number_threads == 1) {
         arr[0].avg_pagerank = arr[0].pagerank;
@@ -410,12 +280,9 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
             thread_wait(&multi_thread_aggregation_tree_2[i]);
         }
     }
-    get_time(true);
 
     bitonic_sort(arr, true, 0, length, number_threads, true);
-    get_time(true);
 
-    printf("\nCompleted, total time is:");
     get_time2(true);
 
     char *char_current = output_path;
@@ -445,8 +312,6 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     char_current[0] = '\0';
 
     free(count);
-    //free(ag_tree);
 
-    
     return ;
 }

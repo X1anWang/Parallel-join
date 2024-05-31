@@ -189,10 +189,6 @@ void aggregation_tree_op2(void *voidargs) {
 }
 
 void scalable_oblivious_join(elem_t *arr, long long length1, long long length2, char* output_path){
-    printf("\n(5) Entered obliviator oblivious parallel fk join function");
-    printf("\n(6) Input length: %lld and %lld", length1, length2);
-    printf("\n(7) key and value size is: %ld and %d (Bytes)", sizeof(arr[0].key), DATA_LENGTH);
-    printf("\n(8) Number of threads: %lld", number_threads);
     long long length = length1 + length2;
     elem_t* arr_ = calloc(length, sizeof(*arr_));
     for (long long i = 0; i < length; i++) {
@@ -213,14 +209,10 @@ void scalable_oblivious_join(elem_t *arr, long long length1, long long length2, 
     control_bit = calloc(length, sizeof(*control_bit));
     int result_length = 0;
     control_bit[0] = false;
-    printf("\n(9) Start obliviator fk join now, we do: 1) sort, 2) aggregate duplication,");
-    printf("\n\t 3) oblivious compaction\n");
-    init_time();
     init_time2();
 
     bitonic_sort(arr, true, 0, length, number_threads, true);
 
-    get_time(true);
     if (number_threads == 1) {
         condition = arr[0].table_0;
         o_memcpy(arr_temp, arr, sizeof(*arr), condition);
@@ -259,16 +251,11 @@ void scalable_oblivious_join(elem_t *arr, long long length1, long long length2, 
         }
     }
 
-    get_time(true);
     result_length = oblivious_compact_elem(arr, control_bit, length, 1, number_threads);
     oblivious_compact_elem(arr_, control_bit, length, 1, number_threads);
-    get_time(true);
-
-    printf("\n(10) Join completed, total time:");
+    
     get_time2(true);
-    printf("\n(11) Output length is: %d", result_length);
-    printf("\n(12) Now write out output result");
-
+    
     char *char_current = output_path;
     for (int i = 0; i < result_length; i++) {
         int key1 = arr[i].key;

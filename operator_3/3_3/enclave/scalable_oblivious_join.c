@@ -292,13 +292,9 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     ag_tree[0].sum_prefix3 = 0;
     ag_tree[0].sum_suffix3 = 0;
     ag_tree[0].complete2 = true;
-    printf("\n BDB Operator 2 - start. \n");
     init_time2();
-    init_time();
-
 
     bitonic_sort(arr, true, 0, length, number_threads, false);
-    get_time(true);
 
     if (number_threads == 1) {
         arr[0].avg_pagerank = arr[0].pagerank;
@@ -343,17 +339,14 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
                 thread_work_push(&multi_thread_aggregation_tree_1[i]);
             }
         }
-    aggregation_tree_op2(&args_op2_[number_threads - 1]);
-    for (int i = 0; i < number_threads - 1; i++) {
-        thread_wait(&multi_thread_aggregation_tree_1[i]);
+        aggregation_tree_op2(&args_op2_[number_threads - 1]);
+        for (int i = 0; i < number_threads - 1; i++) {
+            thread_wait(&multi_thread_aggregation_tree_1[i]);
+        }
     }
-    }
-    get_time(true);
 
     bitonic_sort(arr, true, 0, length, number_threads, true);
-    get_time(true);
 
-    printf("\nCompleted, total time is:");
     get_time2(true);
 
     char *char_current = output_path;

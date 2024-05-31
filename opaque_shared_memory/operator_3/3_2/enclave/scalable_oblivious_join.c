@@ -193,10 +193,6 @@ void aggregation_tree_op3(void *voidargs) {
 }
 
 void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output_path){
-    printf("\n(5) Entered obliviator operator_3 step_2 function");
-    printf("\n(6) Input length: %d and %d", length1, length2);
-    printf("\n(7) key and value size is: %ld and %d (Bytes)", sizeof(arr[0].key), DATA_LENGTH);
-    printf("\n(8) Number of threads: %d", number_threads);
     int length = length1 + length2;
     elem_t* arr_ = calloc(length, sizeof(*arr_));
     for (int i = 0; i < length; i++) {
@@ -220,14 +216,9 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     int count = 0;
     //for (int i = 0; i < num_threads; i++) ready[i] = false;
     for (int i = 0; i < number_threads; i++) res_thread[i] = 0;
-    printf("\n(9) Start Opaque operator_3  step_2 now, we do: 1) sort, 2) aggregate duplication,");
-    printf("\n\t 3) oblivious compaction\n");
     init_time2();
-    init_time();
-
 
     bitonic_sort(arr, true, 0, length, number_threads, false);
-    get_time(true);
 
     if (number_threads == 1) {
         condition = arr[0].table_0;
@@ -281,19 +272,11 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
             length_result += res_thread[i];
         }
     }
-    get_time(true);
 
     bitonic_sort(arr, true, 0, length, number_threads, true);
     bitonic_sort(arr_, true, 0, length, number_threads, true);
-    get_time(true);
-
-
-
     
-    printf("\n(10) Join completed, total time:");
     get_time2(true);
-    printf("\n(11) Output length is: %d", length_result);
-    printf("\n(12) Now write out output result");
 
     char *char_current = output_path;
     for (int i = 0; i < length_result; i++) {

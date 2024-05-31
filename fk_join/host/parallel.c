@@ -96,8 +96,6 @@ fclose(input_file);
         goto exit_free_arr;
     }
 
-    printf("\nExit enclave\n");
-
     fwrite(buf, 1, strlen(buf), output_file);
     fclose(output_file);
     free(buf);
@@ -124,10 +122,10 @@ int main(int argc, char **argv) {
 
 #ifndef DISTRIBUTED_SGX_SORT_HOSTONLY
     if (argc < 4) {
-        printf("usage: %s enclave_image array_size num_threads [num_runs]\n", argv[0]);
+        printf("usage: %s enclave_image num_threads input_file_path\n", argv[0]);
 #else /* DISTRIBUTED_SGX_SORT_HOSTONLY */
     if (argc < 3) {
-        printf("usage: %s array_size num_threads [num_runs]\n", argv[0]);
+        printf("usage: %s num_threads input_file_path\n", argv[0]);
 #endif /* DISTRIBUTED_SGX_SORT_HOSTONLY */
         return 0;
     }
@@ -227,7 +225,7 @@ int main(int argc, char **argv) {
         output_file_path[strlen(argv[i]) + 5] = 'x';
         output_file_path[strlen(argv[i]) + 6] = 't';
         output_file_path[strlen(argv[i]) + 7] = '\0';
-        printf("\nThe output file path is:%s", output_file_path);
+        //printf("\nThe output file path is:%s", output_file_path);
         output_file = fopen(output_file_path, "w");
         if (!output_file) {
             printf("Invalid OUTPUT FILE\n");

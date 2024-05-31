@@ -187,10 +187,6 @@ void aggregation_tree_op(void *voidargs) {
 }
 
 void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output_path){
-    printf("\n(5) Entered operator_2 function");
-    printf("\n(6) Input length: %d", length1);
-    printf("\n(7) key and value size is: %ld and %d (Bytes)", sizeof(arr[0].key), DATA_LENGTH);
-    printf("\n(8) Number of threads: %d", number_threads);
     int length = length1;
     (void)length2;
     float* sum = calloc(length, sizeof(*sum));
@@ -205,7 +201,6 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     ag_tree[0].sum_prefix = 0;
     ag_tree[0].sum_suffix = 0;
     ag_tree[0].complete2 = true;
-    printf("\n(9) Start obliviator operator_2 (X = 3) now, we do: 1) sort, 2) parallel scan\n");
     init_time2();
     init_time();
 
@@ -251,9 +246,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     }
     get_time(true);
 
-    printf("\n(10) operator_1 completed, total time:");
     get_time2(true);
-    printf("\n(11) Now write out output result");
 
     char *char_current = output_path;
     for (int i = 0; i < length; i++) {

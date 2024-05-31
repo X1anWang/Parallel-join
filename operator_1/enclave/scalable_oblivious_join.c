@@ -104,10 +104,6 @@ void soj_scan_1(void *voidargs) {
 
 
 void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output_path){
-    printf("\n(5) Entered operator_1 function");
-    printf("\n(6) Input length: %d", length1);
-    printf("\n(7) key and value size is: %ld and %d (Bytes)", sizeof(arr[0].key), DATA_LENGTH);
-    printf("\n(8) Number of threads: %d", number_threads);
     control_bit = calloc(length1, sizeof(*control_bit));
     (void)length2;
     int length_thread = length1 / number_threads;
@@ -117,7 +113,6 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     index_start_thread[0] = 0;
     struct thread_work soj_scan_1_[number_threads - 1];
     int length_result;
-    printf("\n(9) Start obliviator operator_1 now, we do: 1) parallel scan, 2) oblivious compaction\n");
     init_time2();
     init_time();
 
@@ -155,10 +150,7 @@ void scalable_oblivious_join(elem_t *arr, int length1, int length2, char* output
     length_result = oblivious_compact_elem(arr, control_bit, length1, 1, number_threads);
     get_time(true);
 
-    printf("\n(10) operator_1 completed, total time:");
     get_time2(true);
-    printf("\n(11) Output length is: %d", length_result);
-    printf("\n(12) Now write out output result");
 
     char *char_current = output_path;
     for (int i = 0; i < length_result; i++) {

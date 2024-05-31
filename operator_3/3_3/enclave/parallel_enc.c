@@ -76,7 +76,6 @@ void ecall_start_work(void) {
 }
 
 int ecall_scalable_oblivious_join(char *input_path, size_t len) {
-    printf("\nEntered enclave");
     (void)len;
 
     char *length;
@@ -96,7 +95,6 @@ int ecall_scalable_oblivious_join(char *input_path, size_t len) {
 
     scalable_oblivious_join(arr, length1, length2, input_path);
 
-    printf("\nReturned");
     free(arr);
 
     return 0;
