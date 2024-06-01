@@ -235,10 +235,6 @@ int main(int argc, char **argv) {
 #else
         ret = time_join(algorithm_type);
 #endif
-        if (ret) {
-            handle_error_string("Error in join");
-            goto exit_free_sort;
-        }
     }
 
 #ifndef DISTRIBUTED_SGX_SORT_HOSTONLY
